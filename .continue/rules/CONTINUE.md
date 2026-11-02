@@ -1,3 +1,8 @@
+---
+name: Project Guide
+description: Comprehensive guide for the Tech Tools project
+---
+
 # Project Guide: Tech Tools
 
 Welcome to the Tech Tools codebase. This guide serves as a comprehensive resource for understanding and working with this Rails 8.1 starter application.
@@ -10,7 +15,7 @@ Welcome to the Tech Tools codebase. This guide serves as a comprehensive resourc
   - **Framework**: Ruby on Rails 8.1.4
   - **Language**: Ruby 4.0.9 (as specified in `.ruby-version`)
   - **Database**: SQLite (Development/Test)
-  - **Frontend**: Hotwire (Turbo & Stimulus), Import Maps, Propshaft
+  - **Frontend**: Hotwire (Turbo & Stimulus), Import Maps, Propshaft, Tailwind CSS
   - **Background Processing**: Solid Queue
   - **Caching**: Solid Cache
   - **Real-time**: Solid Cable
@@ -112,3 +117,4 @@ resources :articles
 
 ---
 *Note: This file is automatically loaded by Continue to provide context for AI-assisted development.*
+
