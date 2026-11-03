@@ -72,3 +72,4 @@ group :test do
 end
 
 gem 'tailwindcss-rails', "~> 4.7"
+gem 'avo'
