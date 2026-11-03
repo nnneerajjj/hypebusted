@@ -1,0 +1,43 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+# Relationships between posts and tags - creating a many-to-many association
+one_post_tag:
+  post: one
+  tag: one
+
+two_post_tag:
+  post: one
+  tag: two
+
+three_post_tag:
+  post: two
+  tag: three
+
+four_post_tag:
+  post: two
+  tag: four
+
+five_post_tag:
+  post: three
+  tag: five
+
+six_post_tag:
+  post: four
+  tag: six
+
+seven_post_tag:
+  post: one
+  tag: seven
+
+eight_post_tag:
+  post: three
+  tag: eight
+
+nine_post_tag:
+  post: four
+  tag: nine
+
+ten_post_tag:
+  post: two
+  tag: ten

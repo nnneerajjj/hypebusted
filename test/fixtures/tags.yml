@@ -1,0 +1,41 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: Technology
+  slug: technology
+two:
+  name: Programming
+  slug: programming
+
+three:
+  name: Ruby1
+  slug: ruby1
+
+four:
+  name: JavaScript
+  slug: javascript
+
+five:
+  name: Web Development
+  slug: web-development
+
+six:
+  name: Rails
+  slug: rails
+
+seven:
+  name: Testing
+  slug: testing
+
+eight:
+  name: Performance
+  slug: performance
+
+nine:
+  name: Database
+  slug: database
+
+ten:
+  name: APIs
+  slug: apis
+

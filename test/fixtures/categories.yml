@@ -1,0 +1,30 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: Test Category
+  slug: test-category
+  description: A test category
+  meta_title: Test Category Meta Title
+  meta_description: Test Category Meta Description
+
+two:
+  name: Test Category 2
+  slug: test-category2
+  description: A test category
+  meta_title: Test Category Meta Title
+  meta_description: Test Category Meta Description
+
+three:
+  name: Another Category
+  slug: another-category
+  description: This is another category for testing purposes.
+  meta_title: Another Category Title
+  meta_description: Description for another category.
+
+four:
+  name: Final Category
+  slug: final-category
+  description: The final category in our test set.
+  meta_title: Final Category Title
+  meta_description: Final description.
+
