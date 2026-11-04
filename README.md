@@ -1,4 +1,4 @@
-# Tech Tools
+# HypeBusted.com
 
 A Rails 8.1 starter application with a responsive landing page, Hotwire, and SQLite. Use it as a clean foundation for your next project.
 

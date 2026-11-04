@@ -1,14 +1,14 @@
 ---
 name: Project Guide
-description: Comprehensive guide for the Tech Tools project
+description: Comprehensive guide for the HypeBusted project
 ---
 
-# Project Guide: Tech Tools
+# Project Guide: HypeBusted
 
-Welcome to the Tech Tools codebase. This guide serves as a comprehensive resource for understanding and working with this Rails 8.1 starter application.
+Welcome to the HypeBusted codebase. This guide serves as a comprehensive resource for understanding and working with this Rails 8.1 starter application.
 
 ## 1. Project Overview
-**Tech Tools** is a modern Rails 8.1 starter application designed for building responsive web applications with minimal overhead. It leverages the latest Rails defaults to provide a robust foundation out of the box.
+**HypeBusted** is a modern Rails 8.1 starter application designed for building responsive web applications with minimal overhead. It leverages the latest Rails defaults to provide a robust foundation out of the box.
 
 - **Purpose**: Admin will post reviews of individual tools like CRM, AI tools, VS Code extensions, Tech stack as individual posts. Comparisons of multiple tools as single post. And daily findings like setup of free AI, setup new rails project as blog posts.
 
