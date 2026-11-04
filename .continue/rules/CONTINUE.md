@@ -10,7 +10,8 @@ Welcome to the Tech Tools codebase. This guide serves as a comprehensive resourc
 ## 1. Project Overview
 **Tech Tools** is a modern Rails 8.1 starter application designed for building responsive web applications with minimal overhead. It leverages the latest Rails defaults to provide a robust foundation out of the box.
 
-- **Purpose**: A clean, scalable foundation for new Rails projects.
+- **Purpose**: Admin will post reviews of individual tools like CRM, AI tools, VS Code extensions, Tech stack as individual posts. Comparisons of multiple tools as single post. And daily findings like setup of free AI, setup new rails project as blog posts.
+
 - **Key Technologies**:
   - **Framework**: Ruby on Rails 8.1.4
   - **Language**: Ruby 4.0.9 (as specified in `.ruby-version`)

@@ -1,11 +1,14 @@
 class Post < ApplicationRecord
+  
+  enum :post_type, { review: 0, comparison: 1, journal: 2 }, suffix: true, validate: true
+
+  validates :post_type, presence: true
   validates :title, presence: true
   validates :content, presence: true
-  validates :post_type, presence: true
+  
 
-  belongs_to :category, optional: true # Make it optional for now, can be changed later
-
-  enum :post_type, { journal: "journal", review: "review", comparison: "comparison" }
+  has_many :taggings, dependent: :destroy
+  has_many :tags, through: :taggings
 
   before_validation :generate_slug
 

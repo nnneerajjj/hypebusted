@@ -17,11 +17,6 @@ class Avo::Resources::Post < Avo::BaseResource
     field :post_type, as: :select, enum: ::Post.post_types
     field :youtube_video_id, as: :text
     field :published_at, as: :date_time
-    field :meta_title, as: :text
-    field :meta_description, as: :textarea
-    field :rating, as: :number
     field :slug, as: :text
-    field :category_id, as: :number
-    field :category, as: :belongs_to
   end
 end

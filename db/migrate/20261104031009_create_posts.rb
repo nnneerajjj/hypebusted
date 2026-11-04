@@ -3,14 +3,15 @@ class CreatePosts < ActiveRecord::Migration[8.1]
     create_table :posts do |t|
       t.string :title
       t.text :content
-      t.string :post_type
+      t.integer :post_type, null: false
       t.string :youtube_video_id
       t.datetime :published_at
-      t.string :meta_title
-      t.text :meta_description
-      t.integer :rating
+      t.string :slug
 
       t.timestamps
     end
+
+    add_index :posts, :post_type
+    add_index :posts, :slug, unique: true
   end
 end

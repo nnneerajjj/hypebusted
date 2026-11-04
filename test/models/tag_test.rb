@@ -44,12 +44,12 @@ class TagTest < ActiveSupport::TestCase
     tag = Tag.create!(name: "Ruby", slug: "ruby")
 
     # Create posts and associate them with the tag
-    post1 = Post.create!(title: "First Post", content: "Content", post_type: "journal", category: categories(:one))
-    post2 = Post.create!(title: "Second Post", content: "Content", post_type: "journal", category: categories(:two))
+    post1 = Post.create(title: "First Post", content: "Content", post_type: :review)
+    post2 = Post.create(title: "Second Post", content: "Content", post_type: :review)
 
     # Create post_tags associations
-    PostTag.create!(post: post1, tag: tag)
-    PostTag.create!(post: post2, tag: tag)
+    Tagging.create!(post: post1, tag: tag)
+    Tagging.create!(post: post2, tag: tag)
 
     # Verify the associations
     assert_includes tag.posts, post1
@@ -61,15 +61,16 @@ class TagTest < ActiveSupport::TestCase
     tag = Tag.create!(name: "Ruby", slug: "ruby")
 
     # Create posts and associate them with the tag
-    post1 = Post.create!(title: "First Post", content: "Content", post_type: "journal", category: categories(:one))
-    post2 = Post.create!(title: "Second Post", content: "Content", post_type: "journal", category: categories(:two))
+    post1 = Post.create(title: "First Post", content: "Content", post_type: :review)
+    post2 = Post.create(title: "Second Post", content: "Content", post_type: :review)
 
     # Create post_tags associations
-    post_tag1 = PostTag.create!(post: post1, tag: tag)
-    post_tag2 = PostTag.create!(post: post2, tag: tag)
+    post_tag1 = Tagging.create!(post: post1, tag: tag)
+    post_tag2 = Tagging.create!(post: post2, tag: tag)
 
     # Verify the associations
-    assert_includes tag.post_tags, post_tag1
-    assert_includes tag.post_tags, post_tag2
+    assert_includes tag.taggings, post_tag1
+    assert_includes tag.taggings, post_tag2
   end
 end
+

@@ -2,8 +2,8 @@ class Tag < ApplicationRecord
   validates :name, presence: true, uniqueness: true
   validates :slug, presence: true, uniqueness: true
 
-  has_many :post_tags
-  has_many :posts, through: :post_tags
+  has_many :taggings, dependent: :destroy
+  has_many :posts, through: :taggings
 
   before_validation :generate_slug
 

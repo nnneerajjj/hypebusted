@@ -1,47 +1,28 @@
 one:
   title: First Blog Post
   content: This is the content for the first blog post.
-  post_type: blog
+  post_type: 0
   youtube_video_id: ABCDEFG123
   published_at: <%= 1.day.ago %>
-  meta_title: First Post Meta Title
-  meta_description: Meta description for the first post.
-  rating: 5
   slug: first-blog-post
-  category: one
-
 two:
   title: Second Blog Post
   content: Content for the second blog post, discussing various topics.
-  post_type: blog
+  post_type: 0
   youtube_video_id: HIJKLMN456
   published_at: <%= 2.days.ago %>
-  meta_title: Second Post Meta Title
-  meta_description: Meta description for the second post.
-  rating: 4
   slug: second-blog-post
-  category: two
-
 three:
   title: My Awesome Video Tutorial
   content: A detailed tutorial in video format, explaining complex concepts.
-  post_type: video
+  post_type: 1
   youtube_video_id: OPQRSTU789
   published_at: <%= 3.days.ago %>
-  meta_title: Video Tutorial Meta Title
-  meta_description: Meta description for the video tutorial.
-  rating: 5
   slug: awesome-video-tutorial
-  category: three
-
 four:
   title: Another Blog Entry
   content: Yet another blog entry with interesting information.
-  post_type: blog
+  post_type: 0
   youtube_video_id: VWXYZAB012
   published_at: <%= 4.days.ago %>
-  meta_title: Another Blog Entry Meta Title
-  meta_description: Description for another blog entry.
-  rating: 3
   slug: another-blog-entry
-  category: four
