@@ -2,7 +2,8 @@
 # The values disaplayed here are the default ones. Uncomment and change them to fit your needs.
 Avo.configure do |config|
   ## == Routing ==
-  config.root_path = "/avo"
+  # Admin path. Also moves the status page to <path>/avo_private/status.
+  config.root_path = "/milo"
   # used only when you have custom `map` configuration in your config.ru
   # config.prefix_path = "/internal"
 
@@ -19,8 +20,11 @@ Avo.configure do |config|
 
   ## == Authentication ==
   config.current_user_method do
-    nil
+    Current.user
   end
+  config.sign_out_path_name = :session_path
+  # Status page and private pages check this predicate on the current user.
+  config.is_admin_method = :super_admin?
   # config.authenticate_with do
   # end
 
