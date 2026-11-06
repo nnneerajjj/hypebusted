@@ -1,6 +1,6 @@
 # HypeBusted.com
 
-A Rails 8.1 starter application with a responsive landing page, Hotwire, and SQLite. Use it as a clean foundation for your next project.
+A Rails 8.1 starter application with a responsive landing page, Hotwire, and PostgreSQL. Use it as a clean foundation for your next project.
 
 ## Requirements
 
@@ -27,7 +27,7 @@ bin/rubocop              # Check Ruby style
 bin/brakeman             # Scan for common Rails security issues
 ```
 
-The app uses SQLite for development and test. Its homepage is rendered by `HomeController`; the `/up` endpoint reports application health.
+The app uses PostgreSQL for development and test, so a running PostgreSQL server is required before `bin/setup`. Its homepage is rendered by `HomeController`; the `/up` endpoint reports application health.
 
 ## Where to start building
 

@@ -15,7 +15,7 @@ Welcome to the HypeBusted codebase. This guide serves as a comprehensive resourc
 - **Key Technologies**:
   - **Framework**: Ruby on Rails 8.1.4
   - **Language**: Ruby 4.0.9 (as specified in `.ruby-version`)
-  - **Database**: SQLite (Development/Test)
+  - **Database**: PostgreSQL (Development/Test/Production)
   - **Frontend**: Hotwire (Turbo & Stimulus), Import Maps, Propshaft, Tailwind CSS
   - **Background Processing**: Solid Queue
   - **Caching**: Solid Cache
@@ -114,7 +114,7 @@ resources :articles
 - [Official Rails Guides](https://guides.rubyonrails.org/)
 - [Hotwire Documentation](https://hotwired.dev/)
 - [Kamal Deployment Guide](https://kamal-deploy.org/)
-- [SQLite Rails Guide](https://guides.rubyonrails.org/configuring.html#configuring-a-sqlite3-database)
+- [PostgreSQL Rails Guide](https://guides.rubyonrails.org/configuring.html#configuring-a-database)
 
 ---
 *Note: This file is automatically loaded by Continue to provide context for AI-assisted development.*

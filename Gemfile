@@ -14,7 +14,6 @@ gem "importmap-rails"
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop and debug your application
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
-  gem "friendly_id", "~> 5.5"
 end
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
 gem "turbo-rails"
