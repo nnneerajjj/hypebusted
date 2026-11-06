@@ -20,7 +20,7 @@ end
 
 # Create users
 users = [
-  { email: 'admin@example.com', password: 'securepassword123' },
+  { email: 'admin@example.com', password: 'securepassword123', super_admin: true },
   { email: 'editor@example.com', password: 'editorpassword456' },
   { email: 'author@example.com', password: 'authorpassword789' }
 ]
@@ -28,6 +28,7 @@ users = [
 users.each do |user|
   User.find_or_create_by!(email_address: user[:email]) do |u|
     u.password_digest = BCrypt::Password.create(user[:password])
+    u.super_admin = user[:super_admin] || false
   end
 end
 
