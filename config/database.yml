@@ -91,12 +91,9 @@ production:
   cache:
     <<: *primary_production
     url: <%= ENV["DATABASE_URL"] %>
-    schema_path: db/cache_schema.rb
   queue:
     <<: *primary_production
     url: <%= ENV["DATABASE_URL"] %>
-    schema_path: db/queue_schema.rb
   cable:
     <<: *primary_production
     url: <%= ENV["DATABASE_URL"] %>
-    schema_path: db/cable_schema.rb
