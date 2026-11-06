@@ -39,7 +39,7 @@ posts = [
     content: 'When choosing a CRM tool for your small business, consider factors like ease of use, pricing, and integration capabilities...',
     post_type: 'review',
     published_at: Time.now,
-    tag_names: ['CRM', 'Reviews']
+    tag_names: [ 'CRM', 'Reviews' ]
   },
   {
     title: 'Best AI Tools for Content Creation',
@@ -47,7 +47,7 @@ posts = [
     content: 'Artificial Intelligence is revolutionizing content creation with tools that can generate text, images, and even videos...',
     post_type: 'review',
     published_at: Time.now,
-    tag_names: ['AI', 'Machine Learning', 'Reviews']
+    tag_names: [ 'AI', 'Machine Learning', 'Reviews' ]
   },
   {
     title: 'Essential VS Code Extensions for Developers',
@@ -55,7 +55,7 @@ posts = [
     content: 'Visual Studio Code has become a popular choice among developers due to its extensibility...',
     post_type: 'journal',
     published_at: Time.now,
-    tag_names: ['VS Code', 'Extensions']
+    tag_names: [ 'VS Code', 'Extensions' ]
   },
   {
     title: 'Recommended Tech Stack for Startups',
@@ -63,7 +63,7 @@ posts = [
     content: 'Choosing the right technology stack is crucial for the success of a startup...',
     post_type: 'comparison',
     published_at: Time.now,
-    tag_names: ['Tech Stack', 'Reviews']
+    tag_names: [ 'Tech Stack', 'Reviews' ]
   },
   {
     title: 'Daily Tech Findings: October 1, 2023',
@@ -71,7 +71,7 @@ posts = [
     content: 'Today, we discovered a new AI tool that can generate realistic images from text descriptions...',
     post_type: 'journal',
     published_at: Time.now,
-    tag_names: ['Setup', 'Reviews']
+    tag_names: [ 'Setup', 'Reviews' ]
   }
 ]
 

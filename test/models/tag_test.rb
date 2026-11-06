@@ -25,7 +25,7 @@ class TagTest < ActiveSupport::TestCase
 
   test "should validate uniqueness of name" do
     tag1 = Tag.create!(name: "Unique Tag Name", slug: "unique-tag-name")
-    
+
     tag2 = Tag.new(name: "Unique Tag Name", slug: "unique-tag-name-2")
     refute tag2.valid?
     assert_includes tag2.errors[:name], "has already been taken"
@@ -33,7 +33,7 @@ class TagTest < ActiveSupport::TestCase
 
   test "should validate uniqueness of slug" do
     tag1 = Tag.create!(name: "Unique Tag 1", slug: "unique-slug")
-    
+
     tag2 = Tag.new(name: "Unique Tag 2", slug: "unique-slug")
     refute tag2.valid?
     assert_includes tag2.errors[:slug], "has already been taken"
@@ -73,4 +73,3 @@ class TagTest < ActiveSupport::TestCase
     assert_includes tag.taggings, post_tag2
   end
 end
-

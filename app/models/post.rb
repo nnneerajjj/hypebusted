@@ -1,11 +1,10 @@
 class Post < ApplicationRecord
-  
   enum :post_type, { review: 0, comparison: 1, journal: 2 }, suffix: true, validate: true
 
   validates :post_type, presence: true
   validates :title, presence: true
   validates :content, presence: true
-  
+
 
   has_many :taggings, dependent: :destroy
   has_many :tags, through: :taggings

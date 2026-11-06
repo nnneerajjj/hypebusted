@@ -13,7 +13,7 @@ gem "importmap-rails"
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop and debug your application
-  gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
+  gem "byebug", platforms: [ :mri, :mingw, :x64_mingw ]
 end
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
 gem "turbo-rails"
@@ -70,5 +70,5 @@ group :test do
   gem "selenium-webdriver"
 end
 
-gem 'tailwindcss-rails', "~> 4.7"
-gem 'avo'
+gem "tailwindcss-rails", "~> 4.7"
+gem "avo"
