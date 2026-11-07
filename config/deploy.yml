@@ -106,7 +106,7 @@ accessories:
         POSTGRES_USER: rails_user
         POSTGRES_DB: hypebusted_production
       secret:
-        - POSTGRES_PASSWORD # <--- Kamal will pull this from your local .env file
+        - POSTGRES_PASSWORD # <--- Kamal pulls this from .kamal/secrets
     # files:
     #   - config/mysql/production.cnf:/etc/mysql/my.cnf
     #   - db/production.sql:/docker-entrypoint-initdb.d/setup.sql

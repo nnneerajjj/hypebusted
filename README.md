@@ -35,6 +35,6 @@ The app uses PostgreSQL for development and test, so a running PostgreSQL server
 - Create models and migrations with `bin/rails generate model`.
 - Add controllers and views under `app/controllers` and `app/views`.
 - Add JavaScript with Stimulus controllers in `app/javascript/controllers`.
-- Update the starter landing page styles in `app/assets/stylesheets/application.css`.
+- Update the starter landing page styles in `app/assets/tailwind/application.css` (Tailwind; run `bin/dev` to rebuild).
 
 For framework documentation, see the [Rails Guides](https://guides.rubyonrails.org/).

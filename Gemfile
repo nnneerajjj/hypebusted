@@ -11,10 +11,6 @@ gem "puma", ">= 5.0"
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem "importmap-rails"
 
-group :development, :test do
-  # Call 'byebug' anywhere in the code to stop and debug your application
-  gem "byebug", platforms: [ :mri, :mingw, :x64_mingw ]
-end
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
 gem "turbo-rails"
 # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
@@ -66,8 +62,8 @@ end
 
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
-  gem "capybara"
-  gem "selenium-webdriver"
+  # gem "capybara"
+  # gem "selenium-webdriver"
 end
 
 gem "tailwindcss-rails", "~> 4.7"

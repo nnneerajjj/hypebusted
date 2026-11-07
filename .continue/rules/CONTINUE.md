@@ -1,121 +1,60 @@
 ---
 name: Project Guide
-description: Comprehensive guide for the HypeBusted project
+description: Guide for the HypeBusted project
 ---
 
 # Project Guide: HypeBusted
 
-Welcome to the HypeBusted codebase. This guide serves as a comprehensive resource for understanding and working with this Rails 8.1 starter application.
+HypeBusted.com is a Rails 8.1 app where a single admin publishes tool reviews, multi-tool comparisons, and daily journal posts.
 
-## 1. Project Overview
-**HypeBusted** is a modern Rails 8.1 starter application designed for building responsive web applications with minimal overhead. It leverages the latest Rails defaults to provide a robust foundation out of the box.
+## 1. Stack
+- **Ruby** 4.0.9 (see `.ruby-version`), **Rails** 8.1
+- **Database**: PostgreSQL. Production uses `DATABASE_URL` for all Solid databases too.
+- **Frontend**: Hotwire (Turbo and Stimulus), importmap, Propshaft, Tailwind CSS (`tailwindcss-rails`)
+- **Background jobs, cache, Action Cable**: Solid Queue, Solid Cache, Solid Cable
+- **Admin**: Avo, mounted at `/milo`
+- **Deployment**: Kamal, behind Cloudflare, SSL only
 
-- **Purpose**: Admin will post reviews of individual tools like CRM, AI tools, VS Code extensions, Tech stack as individual posts. Comparisons of multiple tools as single post. And daily findings like setup of free AI, setup new rails project as blog posts.
-
-- **Key Technologies**:
-  - **Framework**: Ruby on Rails 8.1.4
-  - **Language**: Ruby 4.0.9 (as specified in `.ruby-version`)
-  - **Database**: PostgreSQL (Development/Test/Production)
-  - **Frontend**: Hotwire (Turbo & Stimulus), Import Maps, Propshaft, Tailwind CSS
-  - **Background Processing**: Solid Queue
-  - **Caching**: Solid Cache
-  - **Real-time**: Solid Cable
-  - **Deployment**: Kamal
-
-## 2. Getting Started
-
-### Prerequisites
-- **Ruby**: 4.0.9 (Check `.ruby-version`)
-- **Bundler**: `gem install bundler`
-
-### Installation
-1. Clone the repository.
-2. Run the setup script:
-   ```sh
-   bin/setup
-   ```
-   This will install dependencies, prepare the database, and run initial tests.
-
-### Running the App
-Start the development server with:
+## 2. Getting started
 ```sh
-bin/dev
+bin/setup   # install gems, prepare the database, start the server
+bin/dev     # Rails server plus Tailwind watcher (needed for CSS changes)
 ```
-Access the application at `http://localhost:3000`.
+The app runs at `http://localhost:3000`.
 
-### Running Tests
-Execute the test suite using:
-```sh
-bin/rails test
-```
+## 3. Project structure
+- `app/models/`: `Post` (`post_type` enum: review, comparison, journal), `Tag`, `Tagging`, `User`, `Session`, `Current`
+- `app/controllers/`: `HomeController`, `SessionsController`, `PasswordsController`, and `Authentication` (login concern)
+- `app/controllers/avo/`: Avo controllers. `Avo::ApplicationController` requires login and `super_admin`.
+- `app/avo/resources/`: Avo resources for Post, Tag, and Tagging
+- `app/assets/tailwind/application.css`: Tailwind entry point
+- `app/javascript/controllers/`: Stimulus controllers
+- `config/initializers/avo.rb`: Avo configuration (`root_path = "/milo"`)
+- `config/deploy.yml`: Kamal configuration. Secrets come from `.kamal/secrets`.
+- `db/`: migrations and `schema.rb`. The Solid tables are created by migrations in `db/migrate`.
+- `test/`: model, controller, integration, and mailer tests. There is no `test/system` directory.
 
-## 3. Project Structure
-The project follows standard Rails conventions:
+## 4. Development workflow
+- **Style**: Omakase Ruby via RuboCop (`bin/rubocop`)
+- **Security**: `bin/brakeman` and `bin/bundler-audit`
+- **Tests**: `bin/rails test`. Write tests for models and controllers in `test/`.
+- **CI**: `bin/ci` runs the same checks locally. `.github/workflows/ci.yml` runs them on GitHub.
 
-- `app/`: Main application logic.
-  - `controllers/`: Request handling (e.g., `HomeController`).
-  - `models/`: Data logic and database interactions.
-  - `views/`: HTML templates using ERB.
-  - `javascript/controllers/`: Stimulus controllers for frontend interactivity.
-  - `assets/stylesheets/`: CSS files (using Propshaft).
-- `config/`: Application configuration.
-  - `routes.rb`: URL-to-controller mappings.
-  - `database.yml`: Database configuration.
-  - `deploy.yml`: Kamal deployment configuration.
-- `db/`: Database schema, migrations, and seeds.
-- `lib/`: Library modules and custom tasks.
-- `test/`: Unit, functional, and system tests.
+## 5. Authentication and admin access
+- Login is the Rails 8 generated authentication. Controllers require login by default. Use `allow_unauthenticated_access` to opt out.
+- Avo is gated by login plus `User#super_admin?`. Logged-out visitors are sent to `/session/new`. Logged-in non-admins are sent to `/`.
+- The Avo admin is at `/milo`. The old `/avo` path returns 404.
 
-## 4. Development Workflow
+## 6. Troubleshooting
+- **Database out of sync**: run `bin/rails db:prepare`.
+- **CSS changes not showing**: make sure `bin/dev` is running so Tailwind rebuilds.
+- **Ruby version**: use the version in `.ruby-version`.
 
-### Coding Standards
-- Follow the **Omakase Ruby styling** via RuboCop.
-- Run linting: `bin/rubocop`.
-- Ensure security: `bin/brakeman`.
-
-### Testing Approach
-- Write tests for models and controllers in the `test/` directory.
-- Use System Tests for end-to-end functionality (located in `test/system`).
-
-### Deployment
-The project is configured for deployment using **Kamal**. See `config/deploy.yml` for configuration details.
-
-## 5. Key Concepts
-- **Rails 8 Defaults**: This project uses the new "Solid" suite (Solid Queue, Solid Cache, Solid Cable) which utilizes the database instead of Redis for background jobs, caching, and WebSockets.
-- **Hotwire**: Enhances frontend performance by sending HTML over the wire.
-  - **Turbo**: Handles navigation and form submissions without full page reloads.
-  - **Stimulus**: Handles small bits of JavaScript interactivity.
-- **Import Maps**: Manages JavaScript dependencies without a complex build step like Webpack or Esbuild.
-
-## 6. Common Tasks
-
-### Generating a New Feature
-1. **Model**: `bin/rails generate model Article title:string body:text`
-2. **Controller**: `bin/rails generate controller Articles index show`
-3. **Migration**: `bin/rails db:migrate`
-
-### Adding a Route
-Edit `config/routes.rb`:
-```ruby
-resources :articles
-```
-
-### Creating a Stimulus Controller
-1. Create `app/javascript/controllers/hello_controller.js`.
-2. Reference it in your HTML: `<div data-controller="hello"></div>`.
-
-## 7. Troubleshooting
-
-- **Database Issues**: If the database is out of sync, run `bin/rails db:prepare`.
-- **Asset Issues**: If CSS/JS changes aren't reflecting, ensure `bin/dev` is running to watch for changes.
-- **Ruby Version**: Ensure you are using the exact Ruby version specified in `.ruby-version` to avoid compatibility issues.
-
-## 8. References
-- [Official Rails Guides](https://guides.rubyonrails.org/)
-- [Hotwire Documentation](https://hotwired.dev/)
-- [Kamal Deployment Guide](https://kamal-deploy.org/)
-- [PostgreSQL Rails Guide](https://guides.rubyonrails.org/configuring.html#configuring-a-database)
+## 7. References
+- [Rails Guides](https://guides.rubyonrails.org/)
+- [Hotwire](https://hotwired.dev/)
+- [Kamal](https://kamal-deploy.org/)
+- [Avo](https://docs.avohq.io/)
 
 ---
-*Note: This file is automatically loaded by Continue to provide context for AI-assisted development.*
-
+*This file is loaded by Continue to provide context for AI-assisted development.*

@@ -19,13 +19,13 @@ bin/brakeman                   # security scan
 bin/ci                         # full CI pipeline locally (config/ci.rb): setup, rubocop, bundler-audit, importmap audit, brakeman, tests, seeds replant
 ```
 
-System tests (`bin/rails test:system`) are disabled in `bin/ci`.
+System tests (`bin/rails test:system`) are disabled in `bin/ci` and commented out in `.github/workflows/ci.yml`; `test/system` does not exist.
 
 ## Architecture
 
-- **Database is PostgreSQL** (`config/database.yml`, `pg` gem; dbs `hypebusted_development`/`hypebusted_test`). Production uses `DATABASE_URL` for primary plus the Solid cache/queue/cable databases (schemas in `db/*_schema.rb`).
+- **Database is PostgreSQL** (`config/database.yml`, `pg` gem; dbs `hypebusted_development`/`hypebusted_test`). Production points primary, cache, queue, and cable all at `DATABASE_URL`, so every table lives in one database. Solid Queue and Solid Cache tables come from `db/migrate`. The `db/*_schema.rb` files were removed; the `solid_cable_messages` table is created by a migration in `db/migrate`.
 - **Content model**: `Post` (`post_type` enum: review/comparison/journal, with `_type` suffix e.g. `review_type?`; optional `youtube_video_id`, `published_at`) ↔ `Tag` via `Tagging` join. `Post` and `Tag` auto-generate `slug` via `parameterize` in `before_validation` when blank.
-- **Admin UI is Avo** mounted at `/avo` (`mount_avo` in `config/routes.rb`, config in `config/initializers/avo.rb`). Resources live in `app/avo/resources/` (Post, Tag, Tagging); matching stub controllers in `app/controllers/avo/`. There is no public posts UI yet — only `HomeController#index` at root. Avo's `current_user_method` returns `nil` and `authorization_client` is `nil`, so Avo is **not** tied to the app's auth yet. Authorization for Avo is deferred; don't expose `/avo` publicly until it's added.
+- **Admin UI is Avo** mounted at `/milo` (`root_path` in `config/initializers/avo.rb`; `mount_avo` in `config/routes.rb`). Resources live in `app/avo/resources/` (Post, Tag, Tagging); matching stub controllers in `app/controllers/avo/`. Access requires login plus `super_admin`: `Avo::ApplicationController` includes `Authentication` and redirects non-super-admins to `/`. `/milo/avo_private/status` is also protected. `/avo` no longer exists. There is no public posts UI yet — only `HomeController#index` at root.
 - **Auth** is the Rails 8 generated authentication, separate from Avo: `Authentication` concern (`app/controllers/concerns/authentication.rb`) requires login by default via a signed `session_id` cookie → `Session` record; `Current.session`/`Current.user` hold the request state. Controllers opt out with `allow_unauthenticated_access`. `User` uses `has_secure_password`; `PasswordsController` + `PasswordsMailer` handle resets. Test helper: `test/test_helpers/session_test_helper.rb`.
 - Rails 8 "Solid" stack replaces Redis: Solid Queue (jobs, `bin/jobs`), Solid Cache, Solid Cable.
 - `ApplicationController` uses `allow_browser versions: :modern`, so tests/clients with old user agents get 406.
