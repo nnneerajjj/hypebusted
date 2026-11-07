@@ -91,9 +91,9 @@ builder:
   #   - GITHUB_TOKEN
   #   - RAILS_MASTER_KEY
 
-# Use a different ssh user than root
-# ssh:
-#   user: app
+# Deploy as the unprivileged "deploy" user (member of the docker group), not root.
+ssh:
+  user: deploy
 
 # Use accessory services (secrets come from .kamal/secrets).
 accessories:
