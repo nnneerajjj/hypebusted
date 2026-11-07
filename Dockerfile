@@ -32,6 +32,11 @@ ENV RAILS_ENV="production" \
 # Throw-away build stage to reduce size of final image
 FROM base AS build
 
+# Limit parallel gem install and native-extension compiles so the build fits in
+# Docker Desktop's VM memory (the default uses every CPU core at once).
+ENV BUNDLE_JOBS="2" \
+    MAKEFLAGS="-j2"
+
 # Install packages needed to build gems
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential git libpq-dev libyaml-dev pkg-config && \
