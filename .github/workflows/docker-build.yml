@@ -48,6 +48,8 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64
           push: true
+          # Kamal refuses images without its service label; it adds this itself on local builds.
+          labels: service=hypebusted
           tags: ${{ env.IMAGE }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
