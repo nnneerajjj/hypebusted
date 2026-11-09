@@ -1,27 +1,23 @@
 one:
   title: First Blog Post
-  content: This is the content for the first blog post.
   post_type: 0
   youtube_video_id: ABCDEFG123
   published_at: <%= 1.day.ago %>
   slug: first-blog-post
 two:
   title: Second Blog Post
-  content: Content for the second blog post, discussing various topics.
   post_type: 0
   youtube_video_id: HIJKLMN456
   published_at: <%= 2.days.ago %>
   slug: second-blog-post
 three:
   title: My Awesome Video Tutorial
-  content: A detailed tutorial in video format, explaining complex concepts.
   post_type: 1
   youtube_video_id: OPQRSTU789
   published_at: <%= 3.days.ago %>
   slug: awesome-video-tutorial
 four:
   title: Another Blog Entry
-  content: Yet another blog entry with interesting information.
   post_type: 0
   youtube_video_id: VWXYZAB012
   published_at: <%= 4.days.ago %>

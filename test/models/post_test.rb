@@ -70,4 +70,19 @@ class PostTest < ActiveSupport::TestCase
       assert e.message.include?("is not a valid post_type")
     end
   end
+
+  test "content is stored as rich text and survives a save" do
+    post = Post.create!(title: "Rich", content: "<div>Hello <strong>world</strong></div>", post_type: :review)
+
+    post.reload
+    assert_equal "<div>Hello <strong>world</strong></div>", post.content.body.fragment.to_html
+    assert_equal "Hello world", post.content.to_plain_text
+  end
+
+  test "content is required" do
+    post = Post.new(title: "No body", post_type: :review)
+
+    assert_not post.valid?
+    assert_includes post.errors[:content], "can't be blank"
+  end
 end

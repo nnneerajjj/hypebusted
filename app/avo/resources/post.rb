@@ -13,7 +13,7 @@ class Avo::Resources::Post < Avo::BaseResource
     field :id, as: :id
     # field :avatar, as: :avatar
     field :title, as: :text
-    field :content, as: :textarea
+    field :content, as: :trix
     field :post_type, as: :select, enum: ::Post.post_types
     field :youtube_video_id, as: :text
     field :published_at, as: :date_time
