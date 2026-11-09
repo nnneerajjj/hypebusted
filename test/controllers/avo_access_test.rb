@@ -58,6 +58,16 @@ class AvoAccessTest < ActionDispatch::IntegrationTest
     assert_redirected_to "/"
   end
 
+  test "post content uses the rich text (Trix) editor in the admin" do
+    sign_in_as(@super_admin)
+
+    get "#{ADMIN_PATH}/resources/posts/#{posts(:one).id}/edit"
+    follow_redirect! while response.redirect?
+
+    assert_response :success
+    assert_select "trix-editor"
+  end
+
   test "old /avo path is gone" do
     sign_in_as(@super_admin)
 

@@ -1,6 +1,8 @@
 class Post < ApplicationRecord
   enum :post_type, { review: 0, comparison: 1, journal: 2 }, suffix: true, validate: true
 
+  has_rich_text :content
+
   validates :post_type, presence: true
   validates :title, presence: true
   validates :content, presence: true

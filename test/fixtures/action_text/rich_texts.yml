@@ -1,0 +1,19 @@
+one:
+  record: one (Post)
+  name: content
+  body: <div>This is the content for the first blog post.</div>
+
+two:
+  record: two (Post)
+  name: content
+  body: <div>Content for the second blog post, discussing various topics.</div>
+
+three:
+  record: three (Post)
+  name: content
+  body: <div>A detailed tutorial in video format, explaining complex concepts.</div>
+
+four:
+  record: four (Post)
+  name: content
+  body: <div>Yet another blog entry with interesting information.</div>
