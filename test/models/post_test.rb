@@ -198,4 +198,74 @@ class PostTest < ActiveSupport::TestCase
     assert cover, "expected cover_image"
     assert_equal blob.id, cover.blob_id
   end
+
+  # Tag selection (Avo multiple select, submitted as tag_ids_input)
+  test "tag_ids_input sets tags on save for a new post" do
+    post = Post.new(title: "Tagged New", content: "<div>x</div>", post_type: :review)
+    post.tag_ids_input = [ tags(:two).id.to_s, tags(:three).id.to_s ]
+    post.save!
+
+    assert_equal [ tags(:two).id, tags(:three).id ].sort, post.reload.tag_ids.sort
+  end
+
+  test "tag_ids_input replaces the tag set on save" do
+    post = posts(:one)
+    post.tag_ids_input = [ tags(:three).id.to_s ]
+    post.save!
+
+    assert_equal [ tags(:three).id ], post.reload.tag_ids
+  end
+
+  test "tag_ids_input nil leaves tags unchanged" do
+    post = posts(:one)
+    post.tag_ids_input = nil
+    post.save!
+
+    assert_equal [ tags(:one).id ], post.reload.tag_ids
+  end
+
+  test "tag_ids_input empty array clears tags" do
+    post = posts(:one)
+    post.tag_ids_input = []
+    post.save!
+
+    assert_empty post.reload.tags
+  end
+
+  test "tag_ids_input ignores unknown, non-numeric and huge ids" do
+    post = posts(:one)
+    post.tag_ids_input = [ "999999", "abc", "9999999999999999999999", tags(:two).id.to_s ]
+    assert_nothing_raised { post.save! }
+
+    assert_equal [ tags(:two).id ], post.reload.tag_ids
+  end
+
+  test "tag_ids_input dedupes ids without a unique-index error" do
+    post = posts(:one)
+    post.tag_ids_input = [ tags(:two).id.to_s, tags(:two).id.to_s ]
+    assert_nothing_raised { post.save! }
+
+    assert_equal [ tags(:two).id ], post.reload.tag_ids
+  end
+
+  test "invalid save does not change taggings" do
+    post = posts(:one)
+    post.tag_ids_input = [ tags(:two).id.to_s, tags(:three).id.to_s ]
+    post.title = ""
+    assert_not post.save
+
+    assert_equal [ tags(:one).id ], Tagging.where(post_id: posts(:one).id).pluck(:tag_id)
+    assert_equal [ tags(:two).id.to_s, tags(:three).id.to_s ].sort, post.tag_ids_input.sort
+  end
+
+  test "tag_ids_input reader returns current ids as strings" do
+    assert_equal [ "#{tags(:one).id}" ], posts(:one).tag_ids_input
+  end
+
+  test "html_editor save keeps tag_ids_input tags" do
+    post = posts(:one)
+    post.update!(html_editor: true, content_html: "<h1>x</h1>", tag_ids_input: [ tags(:two).id.to_s ])
+
+    assert_equal [ tags(:two).id ], post.reload.tag_ids
+  end
 end

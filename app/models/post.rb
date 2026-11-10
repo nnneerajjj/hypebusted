@@ -19,6 +19,17 @@ class Post < ApplicationRecord
 
   before_validation :normalize_slug
   before_validation :apply_content_html, if: :html_editor
+  before_save :apply_tag_ids, if: -> { !@tag_ids_input.nil? }
+
+  # Tag ids from the Avo multi-select (submitted as strings). nil means the field was not submitted.
+  def tag_ids_input=(values)
+    @tag_ids_input = values.nil? ? nil : Array(values).map(&:to_s).grep(/\A\d+\z/).map(&:to_i).uniq
+  end
+
+  # Submitted ids as strings when set, otherwise the stored tag ids.
+  def tag_ids_input
+    (@tag_ids_input.nil? ? tag_ids : @tag_ids_input).map(&:to_s)
+  end
 
   # Raw body HTML for the Avo HTML textarea: the submitted value if any, else the stored body.
   def content_html
@@ -37,6 +48,11 @@ class Post < ApplicationRecord
   # In HTML mode the raw HTML replaces whatever the rich-text editor submitted.
   def apply_content_html
     self.content = @content_html unless @content_html.nil?
+  end
+
+  # Runs in the save transaction, so a failed validation leaves taggings untouched.
+  def apply_tag_ids
+    self.tags = ::Tag.where(id: @tag_ids_input)
   end
 
   def seo_description

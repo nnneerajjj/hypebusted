@@ -194,4 +194,68 @@ class AvoPostsTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, "Content (HTML)"
     assert_not_includes response.body, "Edit as HTML"
   end
+
+  # Tag selection (multiple select of existing tags)
+  TAG_SELECT = "select[name='post[tag_ids_input][]']".freeze
+
+  test "new form lists all tags as options" do
+    get "/milo/resources/posts/new"
+    assert_response :success
+    assert_select "#{TAG_SELECT} option", count: Tag.count
+    values = css_select("#{TAG_SELECT} option").map { |option| option["value"] }
+    assert_equal Tag.ids.map(&:to_s).sort, values.sort
+  end
+
+  test "edit form preselects current tags" do
+    edit_post
+    assert_select "#{TAG_SELECT} option[selected][value=?]", tags(:one).id.to_s
+  end
+
+  test "create saves selected tags" do
+    assert_difference "Post.count", 1 do
+      post "/milo/resources/posts", params: { post: {
+        title: "Created Tagged", post_type: "review", slug: "created-tagged",
+        content: "<div>Tagged</div>", tag_ids_input: [ tags(:two).id.to_s, tags(:three).id.to_s ]
+      } }
+    end
+    created = Post.find_by!(slug: "created-tagged")
+    assert_equal [ tags(:two).id, tags(:three).id ].sort, created.tag_ids.sort
+  end
+
+  test "update replaces tag set" do
+    update_post(tag_ids_input: [ tags(:three).id.to_s ])
+    assert_response :redirect
+    assert_equal [ tags(:three).id ], @post.reload.tag_ids
+  end
+
+  test "clearing all tags works" do
+    update_post(tag_ids_input: [ "" ])
+    assert_response :redirect
+    assert_empty @post.reload.tags
+  end
+
+  test "omitting tag_ids_input leaves tags unchanged" do
+    update_post(title: "Renamed Without Tag Field")
+    assert_response :redirect
+    assert_equal [ tags(:one).id ], @post.reload.tag_ids
+  end
+
+  test "failed save keeps tags and re-renders selection" do
+    update_post(title: "", tag_ids_input: [ tags(:three).id.to_s ])
+    assert_response :unprocessable_content
+    assert_equal [ tags(:one).id ], @post.reload.tag_ids
+    assert_select "#{TAG_SELECT} option[selected][value=?]", tags(:three).id.to_s
+  end
+
+  test "unknown and non-numeric tag ids are ignored" do
+    update_post(tag_ids_input: [ "999999", "abc", "9999999999999999999999", tags(:two).id.to_s ])
+    assert_response :redirect
+    assert_equal [ tags(:two) ], @post.reload.tags.to_a
+  end
+
+  test "saving in HTML mode keeps tags" do
+    update_post(html_editor: "1", content_html: "<h1>x</h1>", tag_ids_input: [ tags(:two).id.to_s ])
+    assert_response :redirect
+    assert_equal [ tags(:two) ], @post.reload.tags.to_a
+  end
 end
