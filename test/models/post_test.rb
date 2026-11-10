@@ -128,4 +128,74 @@ class PostTest < ActiveSupport::TestCase
     long = Post.new(title: "T", post_type: :review, content: "<div>#{'abc ' * 100}</div>")
     assert_operator long.seo_description.length, :<=, 155
   end
+
+  # Raw HTML editing (Avo "Edit as HTML")
+  test "content_html returns the stored body HTML" do
+    assert_equal "<div>This is the content for the first blog post.</div>", posts(:one).content_html
+  end
+
+  test "content_html is empty for a new post" do
+    assert_equal "", Post.new.content_html
+  end
+
+  test "html_editor defaults to false" do
+    assert_equal false, Post.new.html_editor
+  end
+
+  test "html_editor true replaces content with content_html on save" do
+    post = posts(:one)
+    post.update!(html_editor: true, content_html: "<h1>New</h1>")
+    assert_equal "<h1>New</h1>", post.reload.content.body.to_html
+  end
+
+  test "html_editor true makes content_html win over content assigned in the same update" do
+    post = posts(:one)
+    post.update!(html_editor: true, content: "<div>trix</div>", content_html: "<h1>Raw</h1>")
+    assert_equal "<h1>Raw</h1>", post.reload.content.body.to_html
+  end
+
+  test "html_editor false ignores content_html" do
+    post = posts(:one)
+    post.update!(html_editor: false, content_html: "<h1>Ignored</h1>")
+    assert_equal "<div>This is the content for the first blog post.</div>", post.reload.content.body.to_html
+  end
+
+  test "html_editor cast from Avo's checkbox values" do
+    post = Post.new(html_editor: "1")
+    assert_equal true, post.html_editor
+    post.html_editor = "0"
+    assert_equal false, post.html_editor
+  end
+
+  test "html_editor true with blank content_html is invalid on content" do
+    post = posts(:one)
+    post.assign_attributes(html_editor: true, content_html: "")
+    assert_not post.valid?
+    assert_includes post.errors[:content], "can't be blank"
+    assert_equal "", post.content_html
+  end
+
+  test "content_html normalizes CRLF to LF" do
+    post = Post.new
+    post.content_html = "<div>a</div>\r\n<div>b</div>"
+    assert_equal "<div>a</div>\n<div>b</div>", post.content_html
+  end
+
+  test "CRLF in content_html is stored as LF" do
+    post = posts(:one)
+    post.update!(html_editor: true, content_html: "<div>a</div>\r\n<div>b</div>")
+    body = post.reload.content.body.to_html
+    assert_includes body, "<div>b</div>"
+    assert_not_includes body, "\r"
+  end
+
+  test "html with an image attachment saved in HTML mode keeps cover_image" do
+    blob = image_blob
+    post = posts(:one)
+    post.update!(html_editor: true,
+      content_html: %(<div>Intro<action-text-attachment sgid="#{blob.attachable_sgid}"></action-text-attachment></div>))
+    cover = post.reload.cover_image
+    assert cover, "expected cover_image"
+    assert_equal blob.id, cover.blob_id
+  end
 end
