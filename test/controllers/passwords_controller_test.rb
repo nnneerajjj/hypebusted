@@ -64,4 +64,10 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
     def assert_notice(text)
       assert_select "div", /#{text}/
     end
+
+  test "new works when logged in" do
+    sign_in_as(users(:two))
+    get new_password_path
+    assert_response :success
+  end
 end

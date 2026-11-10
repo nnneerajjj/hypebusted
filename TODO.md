@@ -6,4 +6,4 @@ Shared task list for all Claude chat windows and the developer. Check it before 
 - [x] Edit post HTML in plain-text mode: in the Avo admin (`/milo`), the post form has an "Edit as HTML" checkbox that swaps the Trix editor for a raw HTML textarea (`Post#html_editor` / `Post#content_html`, virtual). Changes saved in either editor round-trip.
 - [x] Show and edit tags on the post form: in the Avo admin (`/milo`), let the admin see and edit a post's tags from the post edit/new form. Use Avo's multi-select field so the admin can pick several existing tags on a post.
 - [ ] Show related posts on each post page: add a related-posts section to `PostsController#show`. The formula for choosing related posts (e.g. shared tags, post type, recency) is not decided yet; decide it before implementing.
-- [ ] Show an admin panel link in the site header: when a super admin is logged in, show a link to the Avo admin (`/milo`) in the header. Not for anonymous or regular visitors.
+- [x] Show an admin panel link in the site header: when a super admin is logged in, show a link to the Avo admin (`/milo`) in the header. Not for anonymous or regular visitors.

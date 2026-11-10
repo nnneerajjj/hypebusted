@@ -10,6 +10,6 @@ class Avo::ApplicationController < Avo::BaseApplicationController
 
   private
     def require_super_admin
-      redirect_to main_app.root_path unless Current.user&.super_admin?
+      redirect_to main_app.root_path unless super_admin_signed_in?
     end
 end
