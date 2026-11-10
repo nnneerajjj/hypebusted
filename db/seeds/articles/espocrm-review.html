@@ -1,0 +1,37 @@
+<p>EspoCRM is the CRM I recommend most often to small teams that want to start quickly and change things later. It is written in PHP, it installs in one sitting, and its entity manager lets you build most of the data model you need without writing code. It is not the prettiest tool here, but it is one of the most practical.</p>
+
+{{image: espocrm-entities | EspoCRM's entity manager, where custom entities and fields are defined}}
+
+<h2>What EspoCRM is</h2>
+<p>EspoCRM is open source under the AGPL and offers a free community edition with a paid tier for additional extensions. It covers the standard CRM ground: accounts, contacts, leads, opportunities, calls, meetings, and cases. Its strength is in how easily those base entities can be adapted to your business.</p>
+
+<h2>Setup</h2>
+<p>The installer walks you through database and admin account setup, and the official Docker image gets a working instance running in a few minutes. For a small team, a single container with a managed database is plenty.</p>
+<ul>
+  <li>Create a dedicated database user with rights only to the EspoCRM database</li>
+  <li>Set the site URL and outgoing email in the administration panel before inviting users</li>
+  <li>Schedule the cron job so workflows, reminders, and email imports run on time</li>
+</ul>
+
+<h2>What I liked</h2>
+<ul>
+  <li><strong>Entity manager.</strong> Adding a custom entity such as "Project" or "Vendor" with its own fields and layouts takes a few minutes in the browser.</li>
+  <li><strong>Workflows.</strong> Rules such as "when a lead is qualified, create a meeting and notify the owner" are built with a visual editor and cover most everyday automation.</li>
+  <li><strong>Email integration.</strong> Connecting a shared mailbox lets the team see and log conversations against the right contact.</li>
+  <li><strong>Speed.</strong> Lists and record pages load quickly even with a few hundred thousand records, which is noticeably better than the heavier suites.</li>
+</ul>
+
+<h2>Where it falls short</h2>
+<ul>
+  <li><strong>Design.</strong> The interface is clean but dated in places, and the default theme needs tweaking before it feels modern.</li>
+  <li><strong>Some features are paid.</strong> Advanced integrations and certain extensions sit behind the commercial tier, so check the feature list against your needs.</li>
+  <li><strong>Reporting.</strong> Standard reports and charts cover most cases, but complex multi-table analysis is better done in an external tool.</li>
+</ul>
+
+{{image: espocrm-pipeline | A sales pipeline in EspoCRM, filtered to show deals closing this quarter}}
+
+<h2>Who should use EspoCRM</h2>
+<p>EspoCRM is a good match for a small or mid-sized business that wants a CRM it can shape without a developer on call. It works well for service businesses that track projects, clients, and recurring work alongside sales.</p>
+
+<h2>Verdict</h2>
+<p>EspoCRM hits a useful middle point: more customizable than Twenty's early releases in some areas, lighter than SuiteCRM, and easy to run on a modest server. The main caveat is the paid tier for some extensions. If you want a practical, flexible CRM with few moving parts, it deserves a trial. The full comparison is in our <a href="/posts/open-source-crm-comparison">open source CRM comparison</a>.</p>

@@ -1,0 +1,24 @@
+<p>For the first months of this project, the deploy ran over SSH as root. It was convenient, and it was a mistake I had been putting off. Today I moved the deploy over to an unprivileged user, and I took notes on the parts that were fiddlier than I expected.</p>
+
+{{image: deploy-user-permissions | A minimal permission set for the deploy user, with Docker access and nothing else}}
+
+<h2>The plan</h2>
+<ul>
+  <li>Create a dedicated deploy user with a non-root shell and no password login</li>
+  <li>Add only the SSH key that CI uses, with the key restricted to that account</li>
+  <li>Give the user Docker access and nothing more, then confirm the deploy still works</li>
+</ul>
+
+<h2>What was harder than expected</h2>
+<p>The Kamal commands run several Docker operations, and the user needed membership in the docker group to run them. That is effectively root-equivalent, so I wrote that down in the server notes and treated it as a known trade-off rather than a fix. The next step would be rootless Docker, which I have not tried yet.</p>
+<p>The second surprise was the secrets file. It was readable by the old root-run process, so the new user could not load it. Tightening the file permissions to the deploy user fixed it, and the file is still excluded from version control.</p>
+
+<h2>Checks I ran</h2>
+<ul>
+  <li>Logged in with the deploy key and confirmed no sudo rights</li>
+  <li>Ran a full deploy from CI and checked the health endpoint afterwards</li>
+  <li>Confirmed that a failed SSH key login is logged on the server</li>
+</ul>
+
+<h2>Open questions</h2>
+<p>I still need to decide whether the deploy user should be able to restart the reverse proxy, or whether that should move to a separate account. For now the answer is yes, and I am noting it here so I remember to revisit it.</p>

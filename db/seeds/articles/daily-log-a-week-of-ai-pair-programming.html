@@ -1,0 +1,29 @@
+<p>I spent a week pairing with an AI coding assistant on everything from small refactors to a new admin screen. I expected it to be either a miracle or a nuisance. It was neither. It was useful in specific, predictable ways, and it needed supervision in others.</p>
+
+{{image: ai-pairing-session | A terminal session where the assistant proposed a change and I reviewed the diff before accepting it}}
+
+<h2>Day 1 to 2: Small refactors</h2>
+<p>Renaming a helper across a dozen files and updating its tests was the kind of job that used to take twenty minutes of careful searching. The assistant did it in one pass, and the test suite caught the one place it missed. The lesson was simple: give it a test suite and it gets much better.</p>
+
+<h2>Day 3: Writing tests first</h2>
+<p>I asked it to write failing tests for a new feature before writing any code. The tests were a little verbose, but they caught two assumptions I had not written down. That worked well enough that I will keep the habit.</p>
+
+<h2>Day 4: The bug it got wrong</h2>
+<p>A timezone bug in a scheduled-publish feature looked simple, and the assistant confidently proposed a fix that worked in my head and failed in the test environment. Reading the diff carefully saved me. Lesson: never accept a fix you have not run.</p>
+
+<h2>Day 5: Reviewing its own output</h2>
+<ul>
+  <li>Asking it to explain the change before applying it caught two unnecessary dependencies</li>
+  <li>Asking for a list of risks found a missing index on a lookup column</li>
+  <li>Asking it to keep the diff small kept reviews manageable</li>
+</ul>
+
+<h2>What I'd tell a colleague</h2>
+<ul>
+  <li>Work in small steps and commit often, so each change is easy to review and revert</li>
+  <li>Keep your project instructions file current so the assistant follows your conventions</li>
+  <li>Treat every suggestion as a draft from a fast junior developer, not an answer from a senior one</li>
+</ul>
+
+<h2>Week in numbers</h2>
+<p>I shipped four small changes, deleted more code than I added, and spent less time on boilerplate. I spent just as long reviewing as I would have spent writing, which is the honest trade-off. Next week I want to try it on a bigger refactor and see whether the review cost stays the same.</p>

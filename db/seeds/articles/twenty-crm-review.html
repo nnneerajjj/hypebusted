@@ -1,0 +1,40 @@
+<p>Most open source CRMs look like they were designed in 2009, and it shows. Twenty is the one that made me stop and reconsider. It is a modern, developer-friendly CRM with a clean interface, a data model you can actually change, and a self-hosted option that does not feel like an afterthought. I spent three weeks running it for a small sales team, and this is what I found.</p>
+
+{{image: twenty-dashboard | Twenty's pipeline view, with deals grouped by stage}}
+
+<h2>What Twenty is</h2>
+<p>Twenty describes itself as an open source alternative to Salesforce and similar hosted CRMs. The project is written in TypeScript, with a React front end and a NestJS back end on PostgreSQL. You can use the hosted cloud version or run the whole stack yourself with Docker, which is what most of the teams I talked to chose.</p>
+<p>The core objects are the ones you expect: people, companies, opportunities, notes, tasks, and activity timelines. What sets it apart is that every one of those objects can be extended with custom fields, and the views you build on top of them (table, kanban, or a filtered list) are saved per workspace.</p>
+
+<h2>Setup and first impressions</h2>
+<p>The self-hosted install took me about twenty minutes from a fresh VPS. The main steps were:</p>
+<ul>
+  <li>Clone the repository and copy the example environment file</li>
+  <li>Set a strong <code>APP_SECRET</code> and your public server URL</li>
+  <li>Start the stack with Docker Compose and create the first workspace from the browser</li>
+  <li>Invite teammates by email, or leave sign-up open for a private team</li>
+</ul>
+<p>Once it was running, the onboarding flow was short and sensible. Importing contacts from a CSV worked on the first try, which is more than I can say for some tools in this list.</p>
+
+<h2>What I liked</h2>
+<ul>
+  <li><strong>Data model you can change.</strong> Adding a "Renewal date" field to companies took under a minute and immediately showed up in filters and views.</li>
+  <li><strong>Pipeline views.</strong> The kanban view for opportunities is fast and easy to read, and dragging a deal between stages updates it right away.</li>
+  <li><strong>Timeline.</strong> Emails, notes, and tasks land on one timeline per person or company, which is the single feature sales reps asked about most.</li>
+  <li><strong>API.</strong> The GraphQL and REST APIs covered everything I needed for a small sync script, and the generated documentation was up to date.</li>
+</ul>
+
+<h2>Where it falls short</h2>
+<ul>
+  <li><strong>Young project.</strong> Releases come often, and some updates changed behavior between versions. Pin your version and read the changelog before upgrading.</li>
+  <li><strong>Fewer built-in integrations.</strong> Compared with older CRMs, you will write more glue code for accounting or marketing tools.</li>
+  <li><strong>Reporting is basic.</strong> You can build useful dashboards, but complex forecasting still needs an export to a spreadsheet or a BI tool.</li>
+</ul>
+
+{{image: twenty-timeline | The activity timeline combines emails, notes and tasks for one contact}}
+
+<h2>Who should use Twenty</h2>
+<p>Twenty is a good fit for a startup or small team that has outgrown spreadsheets, wants to own its customer data, and is comfortable running a small Docker stack. If your team needs phone dialers, complex territory management, or a large marketplace of plugins, look at SuiteCRM or EspoCRM first.</p>
+
+<h2>Verdict</h2>
+<p>Twenty is the most pleasant open source CRM I have used to date. It is young, and you should expect to keep up with its releases, but the interface, the extensible data model, and the timeline make it an easy recommendation for a small sales team that is building its process from scratch. See how it compares to four other open source CRMs in our <a href="/posts/open-source-crm-comparison">open source CRM comparison</a>.</p>

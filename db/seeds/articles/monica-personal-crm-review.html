@@ -1,0 +1,37 @@
+<p>Business CRMs track deals. Monica tracks people. It is an open source personal CRM for remembering birthdays, the names of someone's kids, the last time you had coffee, and the thing you promised to send them. I was skeptical that a personal CRM was worth a self-hosted server, and I am still a little surprised by how much I use it.</p>
+
+{{image: monica-contact | A Monica contact page with notes, relationship details and upcoming reminders}}
+
+<h2>What Monica is</h2>
+<p>Monica is a PHP and Laravel application under the AGPL, with a hosted option and a self-hosted option. Each contact has a profile with relationships, important dates, notes, activities, and gifts. Relationships link people to each other, so you can see that someone is a colleague's partner or a friend's sibling without typing it twice.</p>
+
+<h2>Setup</h2>
+<p>Self-hosting Monica needs a web server, PHP, a database, and a scheduler for reminders. The project provides Docker images that bundle most of this, and a small VPS is plenty for one or two people.</p>
+<ul>
+  <li>Set the application key and public URL before the first login</li>
+  <li>Configure outgoing email, since reminder emails depend on it</li>
+  <li>Back up the database regularly, because the value of the tool is the history you build up in it</li>
+</ul>
+
+<h2>What I liked</h2>
+<ul>
+  <li><strong>Reminders.</strong> Birthdays and custom dates generate reminders in advance, so you can plan something rather than remember at the last minute.</li>
+  <li><strong>Relationships.</strong> Linking people to each other turns a list of contacts into something closer to a family tree of your social life.</li>
+  <li><strong>Private by default.</strong> Because you host it yourself, the notes about your friends never go to a third-party analytics service.</li>
+  <li><strong>Import and export.</strong> You can move your data in and out, which matters for something this personal.</li>
+</ul>
+
+<h2>Where it falls short</h2>
+<ul>
+  <li><strong>Manual upkeep.</strong> The tool is only as good as the notes you add. It takes a few minutes after each meeting, and that habit is the hard part.</li>
+  <li><strong>Mobile experience.</strong> The web app works on a phone, but quick capture after a conversation is smoother with a dedicated mobile client or a shortcut.</li>
+  <li><strong>Not for sales.</strong> If you want deal stages and forecasting, use Twenty or EspoCRM instead.</li>
+</ul>
+
+{{image: monica-reminders | The reminders screen, with birthdays and follow-ups for the coming week}}
+
+<h2>Who should use Monica</h2>
+<p>Monica suits anyone who wants to be more deliberate about friendships, professional networks, or family relationships, and who is comfortable keeping a small server running. Freelancers and people who move often will get the most value from it.</p>
+
+<h2>Verdict</h2>
+<p>Monica is a small, thoughtful tool with a clear purpose. It will not run a sales team, but it can make you a better friend and colleague if you keep it up to date. Compare it with the business CRMs in our <a href="/posts/open-source-crm-comparison">open source CRM comparison</a> if you are deciding which one fits.</p>

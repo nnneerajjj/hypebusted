@@ -1,0 +1,37 @@
+<p>SuiteCRM is the open source CRM with the longest pedigree on this list. It began as a community fork of SugarCRM Community Edition, and it has grown into a full-featured system with accounts, contacts, leads, opportunities, cases, campaigns, and reporting. If you want breadth above everything else, it is still the one to beat.</p>
+
+{{image: suitecrm-accounts | SuiteCRM's accounts module with related contacts and opportunities}}
+
+<h2>What SuiteCRM is</h2>
+<p>SuiteCRM is licensed under the AGPL and runs on PHP with MySQL or MariaDB. The project has two lines: the long-running classic version and SuiteCRM 8, which pairs a Symfony back end with a newer Angular front end. Most teams starting today should choose SuiteCRM 8, and the rest of this review assumes that version.</p>
+
+<h2>Setup</h2>
+<p>Installing SuiteCRM by hand means a web server, PHP extensions, a database, and a cron job for background tasks. The project publishes Docker images, which cut most of that work down, but you still need to set up mail, file storage, and scheduled jobs yourself.</p>
+<ul>
+  <li>Use a managed database or a dedicated MariaDB instance rather than the same box as the web server</li>
+  <li>Configure outgoing email before you invite anyone, since password resets and notifications depend on it</li>
+  <li>Set up the scheduler cron so workflows and email campaigns actually run</li>
+</ul>
+
+<h2>What I liked</h2>
+<ul>
+  <li><strong>Depth.</strong> Leads, opportunities, quotes, cases, and campaigns all exist as first-class modules, with reporting on top of each.</li>
+  <li><strong>Workflows and Advanced OpenWorkflow.</strong> You can automate follow-up tasks, assign records, and send templated emails without writing code.</li>
+  <li><strong>Module Builder.</strong> Custom modules and fields are created in the admin area. This is slower than a modern UI, but it keeps the data model consistent.</li>
+  <li><strong>Community.</strong> Forums, plugins, and a long list of third-party guides mean most questions have already been answered somewhere.</li>
+</ul>
+
+<h2>Where it falls short</h2>
+<ul>
+  <li><strong>Interface.</strong> Even the newer front end feels busier than the modern CRMs. New users spend longer finding things.</li>
+  <li><strong>Upgrades.</strong> Moving between major versions, or applying a large module change, needs a staging copy and careful testing. Do not skip the backup.</li>
+  <li><strong>Performance on large lists.</strong> Searching and filtering large contact lists is slower than in the lighter tools, so plan your database indexes.</li>
+</ul>
+
+{{image: suitecrm-workflows | The workflow designer, used here to create a follow-up task when a lead changes status}}
+
+<h2>Who should use SuiteCRM</h2>
+<p>SuiteCRM suits organizations that need a lot of built-in functionality, such as service cases, campaigns, and detailed reporting, and that have someone who can maintain the server. It is also a sensible choice when you need an established product that has been running in production for many years.</p>
+
+<h2>Verdict</h2>
+<p>SuiteCRM is the most complete open source CRM in this comparison, and it rewards patience. Expect a steeper learning curve and more hands-on maintenance than Twenty or EspoCRM. For a team that needs case management and campaigns out of the box, that trade-off is often worth it. Read the rest of the field in our <a href="/posts/open-source-crm-comparison">open source CRM comparison</a>.</p>
