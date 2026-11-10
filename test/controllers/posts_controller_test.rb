@@ -215,4 +215,16 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     assert_match(/max-age=300/, response.headers["Cache-Control"])
     assert_equal anonymous_etag, response.headers["ETag"]
   end
+
+  # Clickable links Req 5
+  test "post page tags are plain labels in a tag-list without pill class" do
+    show posts(:one)
+    assert_select ".pill", count: 0
+    assert_select "article ul.tag-list li", text: tags(:one).name
+    css_select("article ul.tag-list li").each do |li|
+      assert_empty li.element_children
+      assert_nil li["class"]
+    end
+    assert_select "[style]", count: 0
+  end
 end
