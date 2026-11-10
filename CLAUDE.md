@@ -4,6 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Open tasks live in [TODO.md](TODO.md) — check it at the start of a session and update it when you finish or add work.**
 
+To-do rules:
+- The developer may add to-dos at any time, including mid-feature, even when they are unrelated to the current work. Add them to TODO.md as requested.
+- Never make a commit that only contains TODO.md changes.
+- Any uncommitted TODO.md change is committed together with the next feature commit, whatever that feature is. The to-do change goes in that commit even if it is unrelated to the feature.
+
 ## Project
 
 HypeBusted.com: a Rails 8.1 / Ruby 4.0.9 app where a single admin publishes tool reviews, multi-tool comparisons, and daily "journal" posts. Hotwire + importmap + Propshaft + Tailwind (`tailwindcss-rails`). Deployed with Kamal (`config/deploy.yml`, `.kamal/`).
