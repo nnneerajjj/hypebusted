@@ -14,16 +14,11 @@ class Post < ApplicationRecord
   scope :published, -> { where(published_at: ..Time.current) }
   scope :newest_first, -> { order(published_at: :desc) }
 
-  before_validation :generate_slug
+  before_validation :normalize_slug
 
-  def generate_slug
-    if title.present? && slug.blank?
-      self.slug = title.to_s.parameterize
-    end
-  end
-
-  def to_param
-    slug
+  # Uses the admin-entered slug when given, otherwise the title.
+  def normalize_slug
+    self.slug = (slug.presence || title).to_s.parameterize
   end
 
   def seo_description
