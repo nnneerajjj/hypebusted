@@ -188,6 +188,14 @@ class AvoPostsTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, "Content (HTML)"
   end
 
+  test "show page lists the post's tags" do
+    get "/milo/resources/posts/#{@post.id}"
+    assert_response :success
+    assert_select "[data-field-id='tags']"
+    assert_includes response.body, tags(:one).name
+    assert_not_includes response.body, tags(:two).name
+  end
+
   test "index has no HTML columns" do
     get "/milo/resources/posts"
     assert_response :success

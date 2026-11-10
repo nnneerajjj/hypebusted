@@ -47,6 +47,7 @@ class Avo::Resources::Post < Avo::BaseResource
     field :post_type, as: :select, enum: ::Post.post_types
     field :tag_ids_input, as: :select, multiple: true, only_on: :forms, name: "Tags",
       options: -> { ::Tag.order(:name).pluck(:name, :id).to_h }
+    field :tags, as: :text, only_on: :show, name: "Tags", format_using: -> { value.map(&:name).join(", ") }
     field :youtube_video_id, as: :text
     field :published_at, as: :date_time
     field :slug, as: :text
