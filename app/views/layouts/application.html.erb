@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<html class="scroll-smooth motion-reduce:scroll-auto">
+<html lang="en" class="scroll-smooth motion-reduce:scroll-auto">
   <head>
-    <title><%= content_for(:title) || "HypeBusted — A Rails starter" %></title>
-    <meta name="description" content="A ready-to-build Rails starter application. Explore the stack and get started with your next idea.">
+    <title><%= content_for(:title) || "HypeBusted" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="HypeBusted">
     <meta name="mobile-web-app-capable" content="yes">
-    <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <%= yield :head %>
+    <% if content_for?(:head) %>
+      <%= yield :head %>
+    <% else %>
+      <meta name="description" content="Independent tool reviews, comparisons, and a daily journal. No hype.">
+    <% end %>
 
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
     <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
@@ -18,15 +20,19 @@
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <%= tag.link rel: "preload", href: asset_path("dm-sans.woff2"), as: "font", type: "font/woff2", crossorigin: "anonymous" %>
+    <%= tag.link rel: "preload", href: asset_path("space-grotesk.woff2"), as: "font", type: "font/woff2", crossorigin: "anonymous" %>
 
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="min-h-screen bg-[#fbfcfa] text-[#17241f] antialiased [font-family:'DM_Sans',sans-serif]">
-    <%= yield %>
+  <body class="min-h-screen bg-paper font-sans text-base text-ink antialiased">
+    <a href="#main" class="skip-link">Skip to content</a>
+    <%= render "layouts/header" %>
+    <main id="main" class="page">
+      <%= yield %>
+    </main>
+    <%= render "layouts/footer" %>
   </body>
 </html>

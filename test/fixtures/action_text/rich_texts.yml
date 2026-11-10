@@ -17,3 +17,18 @@ four:
   record: four (Post)
   name: content
   body: <div>Yet another blog entry with interesting information.</div>
+
+draft:
+  record: draft (Post)
+  name: content
+  body: <div>Draft body text.</div>
+
+future:
+  record: future (Post)
+  name: content
+  body: <div>Future body text.</div>
+
+no_video:
+  record: no_video (Post)
+  name: content
+  body: <div>A journal entry with no video.</div>

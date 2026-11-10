@@ -85,4 +85,23 @@ class PostTest < ActiveSupport::TestCase
     assert_not post.valid?
     assert_includes post.errors[:content], "can't be blank"
   end
+
+  # Req 16
+  test "slug must be unique" do
+    dup = Post.new(title: "Other", slug: posts(:one).slug, content: "x", post_type: :review)
+    assert_not dup.valid?
+    assert_includes dup.errors[:slug], "has already been taken"
+  end
+
+  test "to_param is the slug" do
+    assert_equal "first-blog-post", posts(:one).to_param
+  end
+
+  # Req 6
+  test "seo_description is squished plain text truncated to 155" do
+    post = Post.new(title: "T", post_type: :review, content: "<div>Hello   <strong>world</strong>\n again</div>")
+    assert_equal "Hello world again", post.seo_description
+    long = Post.new(title: "T", post_type: :review, content: "<div>#{'abc ' * 100}</div>")
+    assert_operator long.seo_description.length, :<=, 155
+  end
 end

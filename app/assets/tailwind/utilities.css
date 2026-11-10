@@ -1,0 +1,122 @@
+@font-face {
+  font-family: "DM Sans";
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("dm-sans.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("space-grotesk.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "DM Mono";
+  font-weight: 400;
+  font-display: swap;
+  src: url("dm-mono-400.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "DM Mono";
+  font-weight: 500;
+  font-display: swap;
+  src: url("dm-mono-500.woff2") format("woff2");
+}
+
+@theme {
+  --color-ink: #17241f;
+  --color-paper: #fbfcfa;
+  --color-accent: #1f7a5a;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-sans: "DM Sans", sans-serif;
+  --font-mono: "DM Mono", monospace;
+  --text-base: 1.125rem;
+  --text-base--line-height: 1.7;
+}
+
+@utility heading {
+  @apply font-display font-bold tracking-tight;
+}
+
+@layer components {
+  .page {
+    @apply mx-auto max-w-5xl px-6;
+  }
+
+  .skip-link {
+    @apply sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-10 focus:rounded focus:bg-ink focus:px-4 focus:py-2 focus:text-white;
+  }
+
+  .eyebrow {
+    @apply font-mono text-xs uppercase tracking-wider opacity-60;
+  }
+
+  .muted {
+    @apply text-ink/70;
+  }
+
+  .card {
+    @apply relative flex flex-col rounded-xl border border-ink/10 bg-white p-5 focus-within:ring-2 focus-within:ring-accent;
+  }
+
+  .card-feature {
+    @apply min-h-56 rounded-2xl border-0 bg-ink p-8 text-white sm:p-10;
+  }
+
+  .stretched-link {
+    @apply text-inherit no-underline after:absolute after:inset-0 hover:underline focus-visible:outline-none;
+  }
+
+  .pill {
+    @apply rounded-full bg-current/10 px-2.5 py-0.5 text-xs;
+  }
+
+  .prose-post {
+    @apply mx-auto max-w-prose text-base;
+
+    & h2 {
+      @apply heading mt-10 mb-3 text-2xl;
+    }
+    & h3 {
+      @apply heading mt-8 mb-2 text-xl;
+    }
+    & p,
+    & ul,
+    & ol,
+    & blockquote,
+    & pre,
+    & figure {
+      @apply my-5;
+    }
+    & ul {
+      @apply list-disc pl-6 marker:text-accent;
+    }
+    & ol {
+      @apply list-decimal pl-6 marker:font-semibold marker:text-accent;
+    }
+    & li {
+      @apply my-1.5 pl-1;
+    }
+    & a {
+      @apply text-accent underline underline-offset-2 hover:no-underline;
+    }
+    & blockquote {
+      @apply border-l-4 border-accent pl-4 italic;
+    }
+    & pre {
+      @apply overflow-x-auto rounded-lg bg-ink p-4 text-sm text-white;
+    }
+    & code {
+      @apply font-mono text-sm;
+    }
+    & img {
+      @apply h-auto max-w-full rounded-lg;
+    }
+    & figcaption {
+      @apply mt-2 text-sm text-ink/70;
+    }
+  }
+}
