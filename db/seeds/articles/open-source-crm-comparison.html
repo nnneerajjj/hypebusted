@@ -1,0 +1,40 @@
+<p>Over the past two months I set up five open source CRMs side by side and asked the same question of each: could a five-person sales team run its pipeline on this without fighting the software? Each tool has its own full review, linked below. This page is the short version, with the trade-offs that matter when you choose.</p>
+
+{{image: crm-comparison-overview | The five CRMs in this comparison, running on identical small virtual servers}}
+
+<h2>The five contenders</h2>
+<ul>
+  <li><strong><a href="/posts/twenty-crm-review">Twenty</a></strong>: modern, developer-friendly, with an extensible data model and a clean timeline</li>
+  <li><strong><a href="/posts/suitecrm-review">SuiteCRM</a></strong>: the most complete suite, with a long history and a steeper learning curve</li>
+  <li><strong><a href="/posts/espocrm-review">EspoCRM</a></strong>: lightweight and customizable, with a practical entity manager and fast pages</li>
+  <li><strong><a href="/posts/frappe-crm-review">Frappe CRM</a></strong>: a focused pipeline tool that connects to the wider Frappe and ERPNext family</li>
+  <li><strong><a href="/posts/krayin-crm-review">Krayin CRM</a></strong>: a small, MIT-licensed Laravel application that is easy to read and extend</li>
+</ul>
+
+<h2>How we tested</h2>
+<p>Each CRM ran on the same small virtual server with a managed PostgreSQL or MariaDB database, depending on what the project supports. We loaded 2,000 contacts and 300 deals, invited five users, and worked a realistic pipeline for two weeks. Setup time, daily usability, and the ease of changing the data model were the three things we scored most carefully.</p>
+
+<h2>What to look for first</h2>
+<ul>
+  <li><strong>Who will maintain it?</strong> If nobody on the team can run a server, favor the tools with a managed or one-click option.</li>
+  <li><strong>How much will you customize?</strong> Twenty and EspoCRM make custom fields and entities easy. Krayin rewards developers who want to change the code itself.</li>
+  <li><strong>Do you need more than sales?</strong> SuiteCRM covers cases and campaigns. The others focus on the pipeline.</li>
+  <li><strong>What does your license allow?</strong> Most of these use the AGPL, which matters if you plan to offer the software to customers. Krayin's MIT license is the most permissive.</li>
+</ul>
+
+{{image: crm-comparison-pipelines | The same sample pipeline shown in three of the five tools}}
+
+<h2>Our pick by use case</h2>
+<ul>
+  <li><strong>Small startup building its process:</strong> Twenty</li>
+  <li><strong>Organization that needs cases, campaigns and deep reporting:</strong> SuiteCRM</li>
+  <li><strong>Small business that wants flexibility on a modest server:</strong> EspoCRM</li>
+  <li><strong>Sales team planning to connect to ERP or accounting:</strong> Frappe CRM</li>
+  <li><strong>Developer who wants to own and modify the codebase:</strong> Krayin CRM</li>
+</ul>
+
+<h2>The short verdict</h2>
+<p>There is no single winner. Twenty gives the best first impression and the nicest daily experience. SuiteCRM wins on breadth. EspoCRM is the most practical all-rounder for a small business, and Frappe CRM is the cleanest sales workflow. Krayin is the one to pick when you want to read and change every line.</p>
+
+<h2>Next steps</h2>
+<p>Pick the two tools that fit your situation best, then run each one for a week with real data. Setup is quick for most of them, and that trial will tell you more than any comparison table. If you want to get started with Twenty straight away, the setup guide is coming soon.</p>

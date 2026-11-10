@@ -1,0 +1,24 @@
+<p>Today I moved the production Docker image build off my laptop and into GitHub Actions. Until now, I built the image locally and pushed it to the registry before deploying with Kamal. It worked, but it meant every deploy depended on my machine's architecture, my cache, and my memory of which tags I had pushed last.</p>
+
+{{image: github-actions-build | The image build job in GitHub Actions, finishing in a little over four minutes}}
+
+<h2>What changed</h2>
+<ul>
+  <li>The workflow now builds the image on every push to main that touches the app</li>
+  <li>The image is tagged with the commit SHA, so every deploy maps back to exact code</li>
+  <li>Kamal reads the image from the registry instead of building it on the deploy step</li>
+</ul>
+
+<h2>Things that went wrong</h2>
+<p>The first run failed because the build ran out of memory while compiling native gems. Limiting gem install and native compile parallelism in the Dockerfile fixed it. The second problem was a label mismatch: the Kamal service label was missing from the Actions build, so the image was harder to find in the registry. Adding the label to the build step solved it.</p>
+<p>I also forgot that the build cache in Actions is separate from the one on my laptop. The first build took about nine minutes. After the cache warmed up, the same build dropped to just over four.</p>
+
+<h2>What I'm keeping an eye on</h2>
+<ul>
+  <li>Registry storage costs, since every commit now leaves an image behind</li>
+  <li>Whether the job stays fast enough that nobody is tempted to skip it</li>
+  <li>That the deploy workflow never runs against an image that is still building</li>
+</ul>
+
+<h2>Notes for next time</h2>
+<p>Keep the Dockerfile's dependency layers stable so the cache stays useful. If the build slows down again, check whether a dependency change invalidated a layer earlier than expected.</p>

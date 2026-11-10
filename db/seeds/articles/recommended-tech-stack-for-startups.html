@@ -1,0 +1,52 @@
+<p>Every founder I talk to asks the same question early on: which stack should we build on so we do not have to rewrite it in a year? There is no perfect answer, but there are sensible defaults. This comparison covers the four stacks I see most often in early-stage companies, and the situations where each one makes the most sense.</p>
+
+{{image: startup-stack-overview | Four common startup stacks, compared on hiring, speed and long-term cost}}
+
+<h2>What matters more than the language</h2>
+<p>Before comparing frameworks, settle the questions that actually drive the decision:</p>
+<ul>
+  <li><strong>Hiring:</strong> which stack can you staff in your city or remotely within a few weeks?</li>
+  <li><strong>Speed to first release:</strong> how much boilerplate do you need before customers can use the product?</li>
+  <li><strong>Operational load:</strong> how many services will someone on call have to understand?</li>
+  <li><strong>Exit cost:</strong> how hard is it to move to another stack if the business changes shape?</li>
+</ul>
+
+<h2>Option 1: Ruby on Rails with PostgreSQL</h2>
+<p>Rails remains one of the fastest ways to ship a product with authentication, background jobs, email, and an admin area. Rails 8 ships with sensible defaults for caching, queues, and deployment, which reduces the number of services a small team has to run.</p>
+<ul>
+  <li><strong>Strengths:</strong> very productive for CRUD-heavy products, a mature ecosystem, and a single codebase</li>
+  <li><strong>Weaknesses:</strong> fewer developers in some markets than JavaScript, and heavy real-time UI work takes more thought</li>
+  <li><strong>Best for:</strong> B2B SaaS, marketplaces, and internal tools where the product is mostly forms, data and workflows</li>
+</ul>
+
+<h2>Option 2: TypeScript with Next.js and a managed database</h2>
+<p>A TypeScript front end and back end lets one team work across the whole product, and the hiring pool is large. Next.js covers routing, rendering, and API routes. Pair it with a managed Postgres service and you have a stack that most frontend-leaning engineers can pick up quickly.</p>
+<ul>
+  <li><strong>Strengths:</strong> large talent pool, strong tooling, and a good fit for marketing sites that also run an app</li>
+  <li><strong>Weaknesses:</strong> more decisions to make about libraries, and it is easy to accumulate complexity</li>
+  <li><strong>Best for:</strong> consumer apps and products that need a polished front end from the start</li>
+</ul>
+
+<h2>Option 3: Python with Django</h2>
+<p>Django is a batteries-included framework with a strong admin, an ORM, and a long track record. It is a natural choice when the product involves data processing, machine learning, or scientific libraries that Python already handles well.</p>
+<ul>
+  <li><strong>Strengths:</strong> excellent for data-heavy products and teams with analytics backgrounds</li>
+  <li><strong>Weaknesses:</strong> real-time features need extra work, and the front end is usually a separate project</li>
+  <li><strong>Best for:</strong> products where the data pipeline is the business</li>
+</ul>
+
+<h2>Option 4: Go or Elixir for high-throughput services</h2>
+<p>Both languages are excellent for services that handle many concurrent connections, such as event processing or real-time messaging. For an early startup they are rarely the first choice, because the hiring pool is smaller and the ecosystem for typical web products is thinner.</p>
+
+{{image: startup-stack-hiring | Hiring pools differ by stack and by city, so check before you commit}}
+
+<h2>Our recommendation</h2>
+<p>For most early-stage B2B startups, we recommend starting with a monolith. Rails with PostgreSQL is a strong default. Choose TypeScript with Next.js if your product is consumer-facing or your founding team is strongest in JavaScript. Add separate services only when measurements show you need them.</p>
+
+<h2>Checklist before you commit</h2>
+<ul>
+  <li>Can we hire for this stack in the next six months?</li>
+  <li>Can one engineer deploy, monitor and roll back the app on their own?</li>
+  <li>Do we have a managed database, backups, and a staging environment?</li>
+  <li>Would we be comfortable explaining this choice to an investor in one paragraph?</li>
+</ul>

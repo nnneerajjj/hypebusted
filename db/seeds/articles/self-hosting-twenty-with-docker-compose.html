@@ -1,0 +1,54 @@
+<p>Twenty is the open source CRM I recommend most often to small teams, and the question I get back most is how to run it on a server without a lot of fuss. This guide walks through a single-server setup with Docker Compose, from a fresh Ubuntu machine to a working login page over HTTPS.</p>
+
+{{image: twenty-compose-setup | The Twenty login screen after the stack has started on a fresh server}}
+
+<h2>What you need</h2>
+<ul>
+  <li>A Linux server with at least 2 GB of RAM and 20 GB of disk (a small VPS is fine)</li>
+  <li>Docker and the Docker Compose plugin installed</li>
+  <li>A domain name pointing at the server, so you can get a TLS certificate</li>
+  <li>An SMTP account for invitation and password reset emails</li>
+</ul>
+
+<h2>Step 1: Get the code and the environment file</h2>
+<p>Clone the official repository and copy the example environment file. Keep the example file as a reference, and edit the copy.</p>
+<pre><code>git clone https://github.com/twentyhq/twenty.git
+cd twenty/packages/twenty-docker
+cp .env.example .env</code></pre>
+
+<h2>Step 2: Set the values that matter</h2>
+<p>Open <code>.env</code> and set these before starting anything:</p>
+<ul>
+  <li><strong>APP_SECRET</strong>: generate a long random value and never reuse it between environments</li>
+  <li><strong>SERVER_URL</strong>: the public address, such as <code>https://crm.example.com</code></li>
+  <li><strong>POSTGRES_PASSWORD</strong>: change the default, and keep it out of version control</li>
+  <li><strong>Email settings</strong>: the host, port, and credentials for your SMTP provider</li>
+</ul>
+
+<h2>Step 3: Start the stack</h2>
+<p>Bring the containers up in the background and check that they are healthy:</p>
+<pre><code>docker compose up -d
+docker compose ps
+docker compose logs -f server</code></pre>
+<p>The first start takes a few minutes while the database is prepared. Wait for the server logs to report that it is listening before you open the browser.</p>
+
+<h2>Step 4: Put HTTPS in front of it</h2>
+<p>Do not expose the app over plain HTTP. A reverse proxy such as Caddy or Nginx with an automatic certificate is the simplest option. Point it at the local port the server container listens on, and let it manage the certificate renewals.</p>
+<ul>
+  <li>Open ports 80 and 443 on the firewall, and close everything else except SSH</li>
+  <li>Confirm that <code>SERVER_URL</code> matches the address your proxy serves</li>
+  <li>Test the invitation email before you invite the team</li>
+</ul>
+
+<h2>Step 5: Create the workspace and back up</h2>
+<p>Sign up in the browser, create the first workspace, and invite a teammate to confirm email works. Then set up a nightly database dump and copy it somewhere off the server. A CRM without a backup is a single bad disk away from losing the whole sales history.</p>
+
+<h2>Common problems</h2>
+<ul>
+  <li><strong>Invitation emails never arrive:</strong> check the SMTP credentials and the sending domain's SPF and DKIM records</li>
+  <li><strong>Blank page after login:</strong> <code>SERVER_URL</code> probably does not match the address in your browser</li>
+  <li><strong>Containers keep restarting:</strong> the server usually has too little memory, so add swap or move to a larger plan</li>
+</ul>
+
+<h2>Keeping it updated</h2>
+<p>Read the release notes before every upgrade, since the project moves quickly. Take a database backup, pull the new version, and restart the stack during a quiet hour. Once you are comfortable with the routine, the upkeep is about ten minutes a month.</p>

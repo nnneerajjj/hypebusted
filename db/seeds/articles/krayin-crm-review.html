@@ -1,0 +1,37 @@
+<p>Krayin CRM is the smallest project in this comparison, and it is the easiest to read through if you are curious about how a CRM is put together. It is a Laravel application with an MIT license, which means you can take the code, change it, and ship your own version without asking anyone. That freedom comes with trade-offs, and this review covers both sides.</p>
+
+{{image: krayin-leads | Krayin's leads page with a kanban view of the sales stages}}
+
+<h2>What Krayin is</h2>
+<p>Krayin CRM is built on Laravel with Vue.js components for the interactive parts of the admin panel. It covers leads, contacts, products, quotes, activities, and team roles. The code is organized in a way that makes it easy to find where a feature lives, which is a pleasant change from larger systems.</p>
+
+<h2>Setup</h2>
+<p>If you have deployed a Laravel application before, the setup will feel familiar. Clone the repository, install the PHP and JavaScript dependencies, configure the database and mail settings, run the migrations, and create the admin user. Without that experience, expect to spend an afternoon on it.</p>
+<ul>
+  <li>Use the PHP version and extensions listed in the project's requirements, which change with each release</li>
+  <li>Run the queue worker so email and background jobs are processed</li>
+  <li>Put the admin panel behind HTTPS and a strong password before you share the URL</li>
+</ul>
+
+<h2>What I liked</h2>
+<ul>
+  <li><strong>MIT license.</strong> There are no copyleft obligations, so it is easy to fork or embed in a larger product.</li>
+  <li><strong>Readable code.</strong> Laravel conventions make it straightforward to add a field, a new report, or a custom integration.</li>
+  <li><strong>Clean lead flow.</strong> Creating leads, assigning them, and moving them through stages is quick and predictable.</li>
+  <li><strong>Quotes and products.</strong> Basic quoting is built in, which is useful for small service businesses that do not need a separate billing tool.</li>
+</ul>
+
+<h2>Where it falls short</h2>
+<ul>
+  <li><strong>Smaller community.</strong> There are fewer plugins, tutorials, and answered questions than for SuiteCRM or EspoCRM.</li>
+  <li><strong>Fewer integrations.</strong> You will likely write your own connectors for email marketing or accounting tools.</li>
+  <li><strong>Reporting.</strong> The built-in reports are basic. Plan on exporting data for serious analysis.</li>
+</ul>
+
+{{image: krayin-quotes | A quote built from products in the catalog, ready to send to a lead}}
+
+<h2>Who should use Krayin</h2>
+<p>Krayin is a good choice for a developer or small agency that wants to own a CRM codebase and extend it. It is also a useful learning tool for anyone who wants to understand how CRM data models are structured. It is less suited to a non-technical team that expects a large ecosystem of integrations on day one.</p>
+
+<h2>Verdict</h2>
+<p>Krayin CRM is simple, permissively licensed, and easy to change. If you are comfortable with Laravel, it is a solid base to build on. If you want a mature product with a large community, the other options in our <a href="/posts/open-source-crm-comparison">open source CRM comparison</a> will serve you better.</p>

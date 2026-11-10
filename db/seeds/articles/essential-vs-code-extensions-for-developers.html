@@ -1,0 +1,48 @@
+<p>I have reinstalled VS Code on three laptops this year, and every time I end up with the same short list of extensions. Some are obvious, and a few I added only after I got tired of a repetitive task. Here is what stays on my machine and why.</p>
+
+{{image: vscode-extensions-panel | The extensions panel, filtered to the handful I keep enabled}}
+
+<h2>Language and linting</h2>
+<ul>
+  <li><strong>ESLint:</strong> shows lint errors inline as you type, using the same config as the project's CI</li>
+  <li><strong>Prettier:</strong> formats on save so pull requests stop containing formatting noise</li>
+  <li><strong>Ruby LSP:</strong> completion, go-to-definition, and diagnostics for Ruby and Rails projects</li>
+</ul>
+
+<h2>Git and review</h2>
+<ul>
+  <li><strong>GitLens:</strong> inline blame and file history. It is most useful when you are picking up code you did not write</li>
+  <li><strong>GitHub Pull Requests:</strong> review a PR, leave comments, and check out a branch without leaving the editor</li>
+</ul>
+
+<h2>Everyday productivity</h2>
+<ul>
+  <li><strong>Error Lens:</strong> puts the error message at the end of the line, so you do not have to hover to read it</li>
+  <li><strong>Path Intellisense:</strong> completes file paths in imports and config files, which saves a surprising amount of typing</li>
+  <li><strong>Todo Tree:</strong> finds TODO and FIXME comments across the project in one panel</li>
+</ul>
+
+<h2>Front end and styling</h2>
+<ul>
+  <li><strong>Tailwind CSS IntelliSense:</strong> autocomplete for class names and a hover preview of the generated CSS</li>
+  <li><strong>Live Preview:</strong> a small server for quick HTML checks without leaving the editor</li>
+</ul>
+
+<h2>Docker and containers</h2>
+<ul>
+  <li><strong>Docker:</strong> manage images and containers from the sidebar, and open a shell in a running container</li>
+  <li><strong>Dev Containers:</strong> open a project inside a container so the whole team uses the same tools</li>
+</ul>
+
+<h2>What I removed</h2>
+<p>I used to keep a theme extension, two snippet packs, and an icon set. None of them saved time, and each one slowed startup a little. Disabling them made the editor noticeably quicker to open on the older laptop.</p>
+
+<h2>A few settings I change first</h2>
+<ul>
+  <li>Turn on format on save, and set the default formatter per language rather than globally</li>
+  <li>Hide the minimap if you work on a small screen</li>
+  <li>Turn off auto-update for extensions you depend on, and update them deliberately</li>
+</ul>
+
+<h2>Verdict</h2>
+<p>A small set of well-maintained extensions beats a long list. Start with a linter, a formatter, and a git tool, then add anything that removes a repeated step. Check the install count and last update date before you add something new, and remove what you stop using.</p>

@@ -47,3 +47,6 @@
 
 .continueignore
 
+
+# Seed image is a local asset: copy any CC0/public-domain photo here as seed-image.jpg
+/db/seeds/assets/
