@@ -72,4 +72,16 @@ class TagTest < ActiveSupport::TestCase
     assert_includes tag.taggings, post_tag1
     assert_includes tag.taggings, post_tag2
   end
+
+  test "admin-entered slug is normalized" do
+    tag = Tag.create!(name: "Dev Tools", slug: " Dev Tools ")
+    assert_equal "dev-tools", tag.slug
+  end
+
+  test "name uniqueness ignores case" do
+    Tag.create!(name: "AI")
+    tag = Tag.new(name: "ai")
+    assert_not tag.valid?
+    assert_includes tag.errors[:name], "has already been taken"
+  end
 end

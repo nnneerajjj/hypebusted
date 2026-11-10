@@ -268,4 +268,41 @@ class PostTest < ActiveSupport::TestCase
 
     assert_equal [ tags(:two).id ], post.reload.tag_ids
   end
+
+  test "changing only tags bumps updated_at so the ETag changes" do
+    post = posts(:one)
+    before = post.updated_at
+    travel 1.minute do
+      post.update!(tag_ids_input: [ tags(:two).id.to_s ])
+    end
+
+    assert_operator post.reload.updated_at, :>, before
+  end
+
+  test "saving the same tags does not bump updated_at" do
+    post = posts(:one)
+    before = post.reload.updated_at
+    travel 1.minute do
+      post.update!(tag_ids_input: [ tags(:one).id.to_s ])
+    end
+
+    assert_equal before, post.reload.updated_at
+  end
+
+  test "youtube_video_id accepts an 11-character id or blank" do
+    post = posts(:one)
+    [ "dQw4w9WgXcQ", "a_b-c_d-e_f", "", nil ].each do |id|
+      post.youtube_video_id = id
+      assert post.valid?, "expected #{id.inspect} to be valid"
+    end
+  end
+
+  test "youtube_video_id rejects urls, query strings and paths" do
+    post = posts(:one)
+    [ "https://youtu.be/dQw4w9WgXcQ", "abc?autoplay=1&mute=1", "../watch?v=x", "short" ].each do |id|
+      post.youtube_video_id = id
+      assert_not post.valid?, "expected #{id.inspect} to be invalid"
+      assert post.errors[:youtube_video_id].any?
+    end
+  end
 end

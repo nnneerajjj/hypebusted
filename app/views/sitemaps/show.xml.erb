@@ -2,7 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc><%= root_url %></loc>
-    <lastmod><%= (@posts.first&.updated_at || Time.current).iso8601 %></lastmod>
+<% if (home_lastmod = @posts.first&.updated_at) %>
+    <lastmod><%= home_lastmod.iso8601 %></lastmod>
+<% end %>
   </url>
 <% @posts.each do |post| %>
   <url>

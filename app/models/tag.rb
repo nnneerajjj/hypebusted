@@ -1,5 +1,5 @@
 class Tag < ApplicationRecord
-  validates :name, presence: true, uniqueness: true
+  validates :name, presence: true, uniqueness: { case_sensitive: false }
   validates :slug, presence: true, uniqueness: true
 
   has_many :taggings, dependent: :destroy
@@ -7,9 +7,8 @@ class Tag < ApplicationRecord
 
   before_validation :generate_slug
 
+  # Uses the admin-entered slug when given, otherwise the name.
   def generate_slug
-    if name.present? && slug.blank?
-      self.slug = name.to_s.parameterize
-    end
+    self.slug = (slug.presence || name).to_s.parameterize
   end
 end

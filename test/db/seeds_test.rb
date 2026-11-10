@@ -1,8 +1,6 @@
 require "test_helper"
 
 class SeedsTest < ActiveSupport::TestCase
-  YOUTUBE_ID = /\A[A-Za-z0-9_-]{11}\z/
-
   CRM_REVIEW_SLUGS = %w[
     twenty-crm-review
     suitecrm-review
@@ -63,7 +61,7 @@ class SeedsTest < ActiveSupport::TestCase
       assert fragment.at_css("h2"), "#{slug} needs an h2 heading"
       assert fragment.at_css("ul li"), "#{slug} needs a bullet list"
       assert post.cover_image, "#{slug} needs an embedded image"
-      assert_match YOUTUBE_ID, post.youtube_video_id.to_s, "#{slug} needs a valid YouTube ID"
+      assert_match Post::YOUTUBE_ID_FORMAT, post.youtube_video_id.to_s, "#{slug} needs a valid YouTube ID"
       assert_predicate post.tags, :any?, "#{slug} needs at least one tag"
     end
   end

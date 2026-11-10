@@ -23,4 +23,15 @@ class SitemapsControllerTest < ActionDispatch::IntegrationTest
     get "/sitemap.xml"
     assert_response :success
   end
+
+  test "home url has no lastmod when nothing is published" do
+    Post.published.destroy_all
+    get "/sitemap.xml"
+    assert_response :success
+    doc = Nokogiri::XML(response.body)
+    doc.remove_namespaces!
+    home = doc.xpath("//url").find { |u| u.at_xpath("loc").text == "http://www.example.com/" }
+    assert home
+    assert_nil home.at_xpath("lastmod")
+  end
 end
