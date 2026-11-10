@@ -34,7 +34,7 @@ System tests (`bin/rails test:system`) are disabled in `bin/ci` and commented ou
 
 ## Notes
 
-- `config/credentials.yml.enc`, `.kamal/secrets`, and `.env.production` hold deployment secrets; recent commits repeatedly regenerate keys — don't modify or print them.
+- `config/credentials.yml.enc` and `.kamal/secrets` hold deployment secrets; recent commits repeatedly regenerate keys — don't modify or print them.
 
 ## Conventions
 
