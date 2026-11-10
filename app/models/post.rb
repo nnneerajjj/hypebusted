@@ -1,4 +1,6 @@
 class Post < ApplicationRecord
+  YOUTUBE_ID_FORMAT = /\A[A-Za-z0-9_-]{11}\z/
+
   enum :post_type, { review: 0, comparison: 1, journal: 2 }, suffix: true, validate: true
 
   has_rich_text :content
@@ -10,6 +12,7 @@ class Post < ApplicationRecord
   validates :title, presence: true
   validates :content, presence: true
   validates :slug, presence: true, uniqueness: true
+  validates :youtube_video_id, format: { with: YOUTUBE_ID_FORMAT }, allow_blank: true
 
   has_many :taggings, dependent: :destroy
   has_many :tags, through: :taggings
@@ -51,8 +54,13 @@ class Post < ApplicationRecord
   end
 
   # Runs in the save transaction, so a failed validation leaves taggings untouched.
+  # Touches the post when tags change so its ETag changes too.
   def apply_tag_ids
-    self.tags = ::Tag.where(id: @tag_ids_input)
+    new_tags = ::Tag.where(id: @tag_ids_input)
+    return if new_tags.ids.sort == tag_ids.sort
+
+    self.tags = new_tags
+    self.updated_at = Time.current if persisted?
   end
 
   def seo_description

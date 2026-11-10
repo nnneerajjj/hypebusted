@@ -14,6 +14,6 @@ class Avo::Resources::Tag < Avo::BaseResource
     # field :avatar, as: :avatar
     field :name, as: :text
     field :slug, as: :text
-    field :posts, as: :has_many, through: :post_tags
+    field :posts, as: :has_many
   end
 end

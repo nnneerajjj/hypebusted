@@ -1,25 +1,25 @@
 one:
   title: First Blog Post
   post_type: 0
-  youtube_video_id: ABCDEFG123
+  youtube_video_id: ABCDEFG1234
   published_at: <%= 1.day.ago %>
   slug: first-blog-post
 two:
   title: Second Blog Post
   post_type: 0
-  youtube_video_id: HIJKLMN456
+  youtube_video_id: HIJKLMN4567
   published_at: <%= 2.days.ago %>
   slug: second-blog-post
 three:
   title: My Awesome Video Tutorial
   post_type: 1
-  youtube_video_id: OPQRSTU789
+  youtube_video_id: OPQRSTU7890
   published_at: <%= 3.days.ago %>
   slug: awesome-video-tutorial
 four:
   title: Another Blog Entry
   post_type: 0
-  youtube_video_id: VWXYZAB012
+  youtube_video_id: VWXYZAB0123
   published_at: <%= 4.days.ago %>
   slug: another-blog-entry
 draft:
