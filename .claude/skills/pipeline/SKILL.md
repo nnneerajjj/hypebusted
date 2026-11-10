@@ -17,6 +17,11 @@ Isolation rule: the **reviewer** and **tester** get only the requirements/plan a
 4. **planner** (verify mode) with plan + coder report. If CHANGES REQUIRED, send the fixes back to **coder** and re-verify. Max 3 rounds.
 5. **reviewer** with requirements only. If CHANGES REQUIRED, send the findings to **coder**, then run a **fresh** reviewer again. Max 3 rounds.
 6. **tester**. If FAIL, send failures to **coder**, then re-run reviewer and tester. Max 2 rounds.
-7. If any loop hits its cap, stop and report what is unresolved instead of continuing.
+7. If any loop hits its cap, stop and report what is unresolved instead of continuing. Do not commit or open a PR in that case.
+8. **Pull request** (you do this yourself, no agent) once tester PASSes:
+   - If on `main`, create a branch `feature/<short-kebab-name>`.
+   - Stage only the files this pipeline changed. Leave unrelated pre-existing edits (check `git status` from the session start) unstaged. If a file has both, stage only the pipeline's hunks.
+   - Commit with a clear message (what and why), push with `-u origin`, and open a PR with `gh pr create` against `main`. The PR body covers: summary, acceptance criteria, files changed, fix rounds per stage, reviewer findings not applied and why, and browser check steps.
+   - Never merge.
 
-Finish with a short summary: what was built, files changed, how many fix rounds each stage took, any reviewer findings you chose not to apply and why, and the exact URL/steps for the user to check in the browser. Do not commit or push; the user decides after the browser check.
+Finish with a short summary: the PR link first, then what was built, files changed, how many fix rounds each stage took, any reviewer findings you chose not to apply and why, and the exact URL/steps for the user to check in the browser. The user reviews and merges on GitHub.
