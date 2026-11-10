@@ -15,4 +15,12 @@ class SitemapsControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes locs, "http://www.example.com/posts/scheduled-future-post"
     assert_operator doc.xpath("//url/lastmod").size, :>=, Post.published.count
   end
+
+  test "sitemap is reachable logged out and logged in" do
+    get "/sitemap.xml"
+    assert_response :success
+    sign_in_as(users(:one))
+    get "/sitemap.xml"
+    assert_response :success
+  end
 end

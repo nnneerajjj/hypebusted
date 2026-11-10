@@ -17,6 +17,10 @@ module Authentication
       resume_session
     end
 
+    def super_admin_signed_in?
+      resume_session&.user&.super_admin? || false
+    end
+
     def require_authentication
       resume_session || request_authentication
     end

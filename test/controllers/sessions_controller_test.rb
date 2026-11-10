@@ -30,4 +30,18 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_session_path
     assert_empty cookies[:session_id]
   end
+
+  test "new as a super admin renders with the admin link" do
+    sign_in_as(users(:one))
+    get new_session_path
+    assert_response :success
+    assert_select 'header nav a[href="/milo"]', text: "Admin", count: 1
+  end
+
+  test "new as a regular user renders without the admin link" do
+    sign_in_as(users(:two))
+    get new_session_path
+    assert_response :success
+    assert_select 'a[href="/milo"]', count: 0
+  end
 end

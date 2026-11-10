@@ -97,4 +97,52 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select "[style]", count: 0
     assert_no_match(/class="[^"]*\[/, response.body)
   end
+
+  # Admin link: anonymous
+  test "anonymous visitor sees no admin link and gets public caching" do
+    get root_path
+    assert_response :success
+    assert_select 'a[href="/milo"]', count: 0
+    assert_match(/public/, response.headers["Cache-Control"])
+    assert_match(/max-age=300/, response.headers["Cache-Control"])
+    assert response.headers["ETag"].present?
+  end
+
+  # Admin link: super admin
+  test "super admin sees admin link and the page is not cached publicly" do
+    sign_in_as(users(:one))
+    get root_path
+    assert_response :success
+    assert_select 'header nav a[href="/milo"]', text: "Admin", count: 1
+    cache_control = response.headers["Cache-Control"]
+    assert_match(/no-store/, cache_control)
+    assert_match(/private/, cache_control)
+    assert_no_match(/public/, cache_control)
+    assert response.headers["ETag"].blank?, "expected no ETag for super admin, got #{response.headers["ETag"].inspect}"
+  end
+
+  test "super admin sending the anonymous etag gets a fresh page with the admin link" do
+    get root_path
+    anonymous_etag = response.headers["ETag"]
+    assert anonymous_etag.present?
+
+    sign_in_as(users(:one))
+    get root_path, headers: { "If-None-Match" => anonymous_etag }
+    assert_response :success
+    assert_select 'header nav a[href="/milo"]', text: "Admin", count: 1
+  end
+
+  # Admin link: regular user
+  test "regular logged-in user sees no admin link and gets the public page" do
+    get root_path
+    anonymous_etag = response.headers["ETag"]
+
+    sign_in_as(users(:two))
+    get root_path
+    assert_response :success
+    assert_select 'a[href="/milo"]', count: 0
+    assert_match(/public/, response.headers["Cache-Control"])
+    assert_match(/max-age=300/, response.headers["Cache-Control"])
+    assert_equal anonymous_etag, response.headers["ETag"]
+  end
 end

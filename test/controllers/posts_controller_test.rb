@@ -166,4 +166,53 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes response.body, "<em>Hand written</em>"
   end
+
+  # Admin link: anonymous
+  test "anonymous visitor sees no admin link on a post and gets public caching" do
+    assert posts(:one).published_at.past?
+    show posts(:one)
+    assert_response :success
+    assert_select 'a[href="/milo"]', count: 0
+    assert_match(/public/, response.headers["Cache-Control"])
+    assert_match(/max-age=300/, response.headers["Cache-Control"])
+    assert response.headers["ETag"].present?
+  end
+
+  # Admin link: super admin
+  test "super admin sees admin link on a post and the page is not cached publicly" do
+    sign_in_as(users(:one))
+    show posts(:one)
+    assert_response :success
+    assert_select 'header nav a[href="/milo"]', text: "Admin", count: 1
+    cache_control = response.headers["Cache-Control"]
+    assert_match(/no-store/, cache_control)
+    assert_match(/private/, cache_control)
+    assert_no_match(/public/, cache_control)
+    assert response.headers["ETag"].blank?, "expected no ETag for super admin, got #{response.headers["ETag"].inspect}"
+  end
+
+  test "super admin sending the anonymous etag gets a fresh post page with the admin link" do
+    show posts(:one)
+    anonymous_etag = response.headers["ETag"]
+    assert anonymous_etag.present?
+
+    sign_in_as(users(:one))
+    show posts(:one), headers: { "If-None-Match" => anonymous_etag }
+    assert_response :success
+    assert_select 'header nav a[href="/milo"]', text: "Admin", count: 1
+  end
+
+  # Admin link: regular user
+  test "regular logged-in user sees no admin link on a post and gets the public page" do
+    show posts(:one)
+    anonymous_etag = response.headers["ETag"]
+
+    sign_in_as(users(:two))
+    show posts(:one)
+    assert_response :success
+    assert_select 'a[href="/milo"]', count: 0
+    assert_match(/public/, response.headers["Cache-Control"])
+    assert_match(/max-age=300/, response.headers["Cache-Control"])
+    assert_equal anonymous_etag, response.headers["ETag"]
+  end
 end
