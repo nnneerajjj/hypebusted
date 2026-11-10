@@ -51,27 +51,25 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select "p", /nothing published yet/i
   end
 
-  BROWSER = MODERN_BROWSER_HEADERS
-
   # Req 3
   test "every card links once to its show page" do
     journal = Post.create!(title: "Linked Journal", post_type: :journal, content: "x", published_at: 1.hour.ago)
-    get root_path, headers: BROWSER
+    get root_path
     [ posts(:one), posts(:three), journal ].each do |post|
-      assert_select "article a[href=?]", post_path(post), count: 1
+      assert_select "article a[href=?]", "/posts/#{post.slug}", count: 1
     end
   end
 
   # Req 5
   test "home keeps its own title" do
-    get root_path, headers: BROWSER
+    get root_path
     assert_select "title", text: /HypeBusted/
     assert_select "title", text: /\| HypeBusted\z/, count: 0
   end
 
   # Req 7, 8, 9
   test "home has canonical, lang, social tags and WebSite JSON-LD" do
-    get root_path, params: { ref: "x" }, headers: BROWSER
+    get root_path, params: { ref: "x" }
     assert_select "html[lang=en]"
     assert_select "link[rel=canonical][href=?]", "http://www.example.com/"
     assert_select 'meta[property="og:title"]'
@@ -86,16 +84,16 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
 
   # Req 13
   test "home sends etag and public cache-control and honours If-None-Match" do
-    get root_path, headers: BROWSER
+    get root_path
     assert response.headers["ETag"].present?
     assert_match(/public/, response.headers["Cache-Control"])
-    get root_path, headers: BROWSER.merge("If-None-Match" => response.headers["ETag"])
+    get root_path, headers: { "If-None-Match" => response.headers["ETag"] }
     assert_response :not_modified
   end
 
   # Req 14/15
   test "home has no inline styles or arbitrary value classes" do
-    get root_path, headers: BROWSER
+    get root_path
     assert_select "[style]", count: 0
     assert_no_match(/class="[^"]*\[/, response.body)
   end

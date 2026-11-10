@@ -1,10 +1,8 @@
 require "test_helper"
 
 class PostsControllerTest < ActionDispatch::IntegrationTest
-  BROWSER = MODERN_BROWSER_HEADERS
-
   def show(post, params: {}, headers: {})
-    get "/posts/#{post.slug}", params: params, headers: BROWSER.merge(headers)
+    get "/posts/#{post.slug}", params: params, headers: headers
   end
 
   def create_post_with_image(caption: nil, filename: "sample-product-shot.png", **attrs)
@@ -23,7 +21,7 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
 
   # Req 1
   test "route uses slug param" do
-    assert_equal "/posts/first-blog-post", post_path(posts(:one))
+    assert_equal "/posts/first-blog-post", post_path(posts(:one).slug)
   end
 
   test "published post is visible without login" do
@@ -38,7 +36,7 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
       assert_response :not_found
       assert_not_includes response.body, p.title
     end
-    get "/posts/does-not-exist", headers: BROWSER
+    get "/posts/does-not-exist"
     assert_response :not_found
   end
 

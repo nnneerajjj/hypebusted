@@ -1,11 +1,9 @@
 require "test_helper"
 
 class SitemapsControllerTest < ActionDispatch::IntegrationTest
-  BROWSER = MODERN_BROWSER_HEADERS
-
   # Req 12
   test "sitemap is xml listing home and published posts with lastmod" do
-    get "/sitemap.xml", headers: BROWSER
+    get "/sitemap.xml"
     assert_response :success
     assert_match %r{xml}, response.media_type
     doc = Nokogiri::XML(response.body)

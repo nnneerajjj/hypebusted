@@ -61,7 +61,7 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "example.com" }
+  config.action_mailer.default_url_options = { host: "hypebusted.com", protocol: "https" }
 
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via bin/rails credentials:edit.
   # config.action_mailer.smtp_settings = {
@@ -83,13 +83,11 @@ Rails.application.configure do
   config.active_record.attributes_for_inspect = [ :id ]
 
   # Enable DNS rebinding protection and other `Host` header attacks.
-  # config.hosts = [
-  #   "example.com",     # Allow requests from example.com
-  #   /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
-  # ]
-  #
-  # Skip DNS rebinding protection for the default health check endpoint.
-  # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+  # Only serve the canonical host, so request.base_url (canonical/og:url) can't be spoofed.
+  config.hosts = [ "hypebusted.com" ]
+
+  # Skip DNS rebinding protection for the default health check endpoint (kamal-proxy hits it by IP).
+  config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
   # Suppress fragment caching digest warnings caused by third-party engine files
   config.action_view.logger = nil
