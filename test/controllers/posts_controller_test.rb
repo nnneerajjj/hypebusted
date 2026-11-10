@@ -6,10 +6,7 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   def create_post_with_image(caption: nil, filename: "sample-product-shot.png", **attrs)
-    blob = ActiveStorage::Blob.create_and_upload!(
-      io: File.open(file_fixture("sample-product-shot.png")), filename: filename, content_type: "image/png"
-    )
-    blob.analyze
+    blob = image_blob(filename: filename)
     cap = caption ? %( caption="#{caption}") : ""
     Post.create!({ title: "Image Post", post_type: :review, published_at: 1.hour.ago,
       content: %(<div>Intro text<action-text-attachment sgid="#{blob.attachable_sgid}"#{cap}></action-text-attachment></div>) }.merge(attrs))
@@ -160,5 +157,13 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "[style]", count: 0
     assert_no_match(/class="[^"]*\[/, response.body)
     assert_select "article.prose-post"
+  end
+
+  test "HTML saved in HTML mode renders on the public page" do
+    post = posts(:one)
+    post.update!(html_editor: true, content_html: "<div><em>Hand written</em></div>")
+    show post
+    assert_response :success
+    assert_includes response.body, "<em>Hand written</em>"
   end
 end

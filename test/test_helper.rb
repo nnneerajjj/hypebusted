@@ -12,5 +12,10 @@ module ActiveSupport
     fixtures :all
 
     # Add more helper methods to be used by all tests here...
+    def image_blob(filename: "sample-product-shot.png")
+      ActiveStorage::Blob.create_and_upload!(
+        io: File.open(file_fixture("sample-product-shot.png")), filename: filename, content_type: "image/png"
+      ).tap(&:analyze)
+    end
   end
 end
