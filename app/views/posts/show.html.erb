@@ -1,4 +1,5 @@
-<% page_title = "#{@post.title.truncate(47)} | HypeBusted" %>
+<% site = { "@type": "Organization", name: ApplicationHelper::SITE_NAME } %>
+<% page_title = "#{@post.title.truncate(47)} | #{ApplicationHelper::SITE_NAME}" %>
 <% image = @post.cover_image && rails_blob_url(@post.cover_image) %>
 <% description = @post.seo_description %>
 <% content_for :title, page_title %>
@@ -12,15 +13,15 @@
   dateModified: @post.updated_at.iso8601,
   mainEntityOfPage: post_url(@post.slug),
   image: image,
-  author: { "@type": "Organization", name: "HypeBusted" },
-  publisher: { "@type": "Organization", name: "HypeBusted" }
+  author: site,
+  publisher: site
 }.compact) %>
 
 <article class="prose-post py-12">
   <header>
     <p class="eyebrow"><%= @post.post_type.humanize %></p>
     <h1 class="heading mt-3 text-4xl leading-tight"><%= @post.title %></h1>
-    <p class="eyebrow mt-3"><time datetime="<%= @post.published_at.iso8601 %>"><%= @post.published_at.strftime("%B %-d, %Y") %></time></p>
+    <p class="eyebrow mt-3"><%= time_tag_for(@post.published_at, "%B %-d, %Y") %></p>
     <%= render "posts/tags", post: @post %>
   </header>
 
