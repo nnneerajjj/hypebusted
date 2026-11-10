@@ -31,4 +31,18 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_nil svg["style"]
     assert html.html_safe?
   end
+
+  test "time_tag_for renders a time element with an ISO datetime and the given format" do
+    time = Time.utc(2026, 3, 5, 14, 30)
+    el = Nokogiri::HTML5.fragment(time_tag_for(time, "%b %-d, %Y")).at_css("time")
+    assert_equal time.iso8601, el["datetime"]
+    assert_equal "Mar 5, 2026", el.text
+    assert_nil el["class"]
+  end
+
+  test "time_tag_for passes class through" do
+    el = Nokogiri::HTML5.fragment(time_tag_for(Time.utc(2026, 3, 5), "%b %-d", class: "eyebrow")).at_css("time")
+    assert_equal "eyebrow", el["class"]
+    assert_equal "Mar 5", el.text
+  end
 end

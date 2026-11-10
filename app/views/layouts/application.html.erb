@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth motion-reduce:scroll-auto">
   <head>
-    <title><%= content_for(:title) || "HypeBusted" %></title>
+    <title><%= content_for(:title) || ApplicationHelper::SITE_NAME %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="HypeBusted">
+    <meta name="application-name" content="<%= ApplicationHelper::SITE_NAME %>">
     <meta name="mobile-web-app-capable" content="yes">
     <%= csp_meta_tag %>
 

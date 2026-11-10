@@ -26,6 +26,11 @@ module ApplicationHelper
     tag.script(json_escape(data.to_json).html_safe, type: "application/ld+json")
   end
 
+  # <time> element with a machine-readable ISO datetime and a human-readable strftime label.
+  def time_tag_for(time, format, class: nil)
+    time_tag(time, time.strftime(format), class:)
+  end
+
   # Decorative stroke icon; size it with classes (e.g. "size-5"), never inline styles.
   def link_icon(name, class: nil)
     tag.svg(tag.path(d: ICON_PATHS.fetch(name)),

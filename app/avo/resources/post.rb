@@ -1,15 +1,6 @@
 class Avo::Resources::Post < Avo::BaseResource
   self.icon = "tabler/outline/ballpen"
 
-  # self.avatar = {
-  #   source: :avatar
-  # }
-  # self.includes = []
-  # self.attachments = []
-  # self.search = {
-  #   query: -> { query.ransack(id_eq: q, m: "or").result(distinct: false) }
-  # }
-
   # Wrapper targets Avo's resource-edit controller toggles (`<fieldId><Type>Wrapper`).
   TRIX_WRAPPER_TARGET = "contentTrixWrapper".freeze
   HTML_WRAPPER_TARGET = "contentHtmlTextareaWrapper".freeze
@@ -20,7 +11,6 @@ class Avo::Resources::Post < Avo::BaseResource
 
   def fields
     field :id, as: :id
-    # field :avatar, as: :avatar
     field :title, as: :text
     field :content, as: :trix,
       html: -> { edit { wrapper { classes { "hidden" if record.html_editor } } } }
