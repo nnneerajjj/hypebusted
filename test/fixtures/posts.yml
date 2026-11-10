@@ -22,3 +22,18 @@ four:
   youtube_video_id: VWXYZAB012
   published_at: <%= 4.days.ago %>
   slug: another-blog-entry
+draft:
+  title: Unfinished Draft Post
+  post_type: 0
+  published_at:
+  slug: unfinished-draft-post
+future:
+  title: Scheduled Future Post
+  post_type: 0
+  published_at: <%= 3.days.from_now %>
+  slug: scheduled-future-post
+no_video:
+  title: Post Without Video
+  post_type: 0
+  published_at: <%= 5.days.ago %>
+  slug: post-without-video

@@ -1,5 +1,15 @@
 class Avo::Resources::Post < Avo::BaseResource
   self.icon = "tabler/outline/ballpen"
+
+  # Post URLs use the slug (Post#to_param), so Avo must look records up by slug.
+  # Falls back to id so older links and Avo's own id-based lookups keep working.
+  self.find_record_method = -> {
+    if id.is_a?(Array)
+      query.where(slug: id)
+    else
+      query.find_by(slug: id.to_s) || query.find(id)
+    end
+  }
   # self.avatar = {
   #   source: :avatar
   # }

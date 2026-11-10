@@ -1,0 +1,33 @@
+<% page_title = "#{@post.title.truncate(47)} | HypeBusted" %>
+<% image = @post.cover_image && rails_blob_url(@post.cover_image) %>
+<% content_for :title, page_title %>
+<% seo_tags title: @post.title, description: @post.seo_description, type: "article", image: image, published_at: @post.published_at %>
+<%= json_ld({
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: @post.title,
+  description: @post.seo_description,
+  datePublished: @post.published_at.iso8601,
+  dateModified: @post.updated_at.iso8601,
+  mainEntityOfPage: post_url(@post),
+  image: image,
+  author: { "@type": "Organization", name: "HypeBusted" },
+  publisher: { "@type": "Organization", name: "HypeBusted" }
+}.compact) %>
+
+<article class="prose-post py-12">
+  <header>
+    <p class="eyebrow"><%= @post.post_type.humanize %></p>
+    <h1 class="heading mt-3 text-4xl leading-tight"><%= @post.title %></h1>
+    <p class="eyebrow mt-3"><time datetime="<%= @post.published_at.iso8601 %>"><%= @post.published_at.strftime("%B %-d, %Y") %></time></p>
+    <%= render "posts/tags", post: @post %>
+  </header>
+
+  <% if @post.youtube_video_id.present? %>
+    <div class="aspect-video my-8 overflow-hidden rounded-lg">
+      <iframe class="size-full" src="https://www.youtube-nocookie.com/embed/<%= @post.youtube_video_id %>" title="Video: <%= @post.title %>" loading="lazy" allow="encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+  <% end %>
+
+  <%= @post.content %>
+</article>
