@@ -30,6 +30,7 @@
   --color-ink: #17241f;
   --color-paper: #fbfcfa;
   --color-accent: #1f7a5a;
+  --color-accent-light: #6fdcae;
   --font-display: "Space Grotesk", sans-serif;
   --font-sans: "DM Sans", sans-serif;
   --font-mono: "DM Mono", monospace;
@@ -70,8 +71,34 @@
     @apply text-inherit no-underline after:absolute after:inset-0 hover:underline focus-visible:outline-none;
   }
 
-  .pill {
-    @apply rounded-full bg-current/10 px-2.5 py-0.5 text-xs;
+  /* Press feedback for comparison/review cards (not journal rows, which also use .card). */
+  .card-press {
+    @apply motion-safe:transition active:scale-98 motion-reduce:active:scale-100;
+  }
+
+  /* Review card: hover border alongside .card-press press feedback. */
+  .card-review {
+    @apply hover:border-ink/25;
+  }
+
+  .card-cta {
+    @apply mt-auto flex items-center justify-between pt-6 font-semibold text-accent-light;
+  }
+
+  .cta-circle {
+    @apply grid size-11 shrink-0 place-items-center rounded-full bg-accent-light text-ink;
+  }
+
+  .card-cta-sm {
+    @apply mt-auto flex items-center gap-1 pt-4 text-sm font-semibold text-accent;
+  }
+
+  .cta-nudge {
+    @apply motion-safe:transition group-hover:translate-x-1 motion-reduce:group-hover:translate-x-0;
+  }
+
+  .row-chevron {
+    @apply shrink-0 opacity-40 motion-safe:transition group-hover:translate-x-0.75 group-hover:opacity-90 motion-reduce:group-hover:translate-x-0;
   }
 
   .prose-post {
@@ -117,6 +144,21 @@
     }
     & figcaption {
       @apply mt-2 text-sm text-ink/70;
+    }
+  }
+
+  /* Tag labels separated by " · ". Also scoped under .prose-post to beat its ul/li rules on the post page. */
+  .tag-list,
+  .prose-post .tag-list {
+    @apply mt-4 mb-0 flex list-none flex-wrap p-0;
+
+    & li {
+      @apply m-0 p-0;
+    }
+    & li + li::before {
+      content: "·"; /* fallback for browsers without alt-text syntax */
+      content: "·" / "";
+      @apply mx-2;
     }
   }
 }
