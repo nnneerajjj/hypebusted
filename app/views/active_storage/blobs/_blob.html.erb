@@ -1,7 +1,7 @@
 <% caption = blob.try(:caption).presence %>
 <figure>
   <% if blob.representable? %>
-    <%= image_tag blob.variant(resize_to_limit: [ 1400, nil ], format: :webp), alt: caption || blob.filename.base.tr("-_", " ").humanize, width: blob.metadata[:width], height: blob.metadata[:height], loading: "lazy", decoding: "async" %>
+    <%= image_tag blob.representation(resize_to_limit: [ 1400, nil ], format: :webp), alt: caption || blob.filename.base.tr("-_", " ").humanize, width: blob.metadata[:width], height: blob.metadata[:height], loading: "lazy", decoding: "async" %>
   <% else %>
     <%= link_to blob.filename.to_s, blob %>
   <% end %>

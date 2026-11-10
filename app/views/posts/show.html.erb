@@ -1,15 +1,16 @@
 <% page_title = "#{@post.title.truncate(47)} | HypeBusted" %>
 <% image = @post.cover_image && rails_blob_url(@post.cover_image) %>
+<% description = @post.seo_description %>
 <% content_for :title, page_title %>
-<% seo_tags title: @post.title, description: @post.seo_description, type: "article", image: image, published_at: @post.published_at %>
+<% seo_tags title: @post.title, description: description, type: "article", image: image, published_at: @post.published_at %>
 <%= json_ld({
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   headline: @post.title,
-  description: @post.seo_description,
+  description: description,
   datePublished: @post.published_at.iso8601,
   dateModified: @post.updated_at.iso8601,
-  mainEntityOfPage: post_url(@post),
+  mainEntityOfPage: post_url(@post.slug),
   image: image,
   author: { "@type": "Organization", name: "HypeBusted" },
   publisher: { "@type": "Organization", name: "HypeBusted" }

@@ -35,3 +35,15 @@ System tests (`bin/rails test:system`) are disabled in `bin/ci` and commented ou
 ## Notes
 
 - `config/credentials.yml.enc`, `.kamal/secrets`, and `.env.production` hold deployment secrets; recent commits repeatedly regenerate keys — don't modify or print them.
+
+## Conventions
+
+- Keep code DRY: compute a value once (e.g. a view local or helper) instead of calling the same method twice, and don't duplicate logic or constants across files.
+- Public post URLs use the slug: `post_path(post.slug)`. `Post#to_param` is the default id so Avo (`/milo`) works with plain ids.
+
+## Accepted trade-offs (do not flag in code reviews)
+
+This is a content site, not real-time. These are deliberate:
+
+- **Stale tags for up to 5 minutes.** Public pages send `expires_in 5.minutes, public: true` with an ETag built from posts only. Tag/Tagging changes don't touch the post, so tags can be stale until the cache expires or the post is edited. Don't add `touch: true` or put tags in the ETag.
+- **Sitemap/home `lastmod` doesn't bump on minor edits.** The root URL's `lastmod` comes from the newest-published post's `updated_at`, not `maximum(:updated_at)`. Edits are rare and shouldn't force a recrawl.

@@ -93,8 +93,32 @@ class PostTest < ActiveSupport::TestCase
     assert_includes dup.errors[:slug], "has already been taken"
   end
 
-  test "to_param is the slug" do
-    assert_equal "first-blog-post", posts(:one).to_param
+  test "to_param is the id, so Avo can use plain ids" do
+    assert_equal posts(:one).id.to_s, posts(:one).to_param
+  end
+
+  test "admin-entered slug is normalized" do
+    post = Post.new(title: "T", slug: "  My Custom_Slug!  ", content: "x", post_type: :review)
+    assert post.valid?
+    assert_equal "my-custom_slug", post.slug
+  end
+
+  test "blank slug is generated from title" do
+    post = Post.new(title: "Daily Log", slug: "", content: "x", post_type: :review)
+    assert post.valid?
+    assert_equal "daily-log", post.slug
+  end
+
+  test "slug that normalizes to nothing is invalid" do
+    post = Post.new(title: "T", slug: "!!!", content: "x", post_type: :review)
+    assert_not post.valid?
+    assert_includes post.errors[:slug], "can't be blank"
+  end
+
+  test "normalized slug that matches another post is taken" do
+    post = Post.new(title: "T", slug: " First Blog Post ", content: "x", post_type: :review)
+    assert_not post.valid?
+    assert_includes post.errors[:slug], "has already been taken"
   end
 
   # Req 6
