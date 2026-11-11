@@ -126,6 +126,17 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Sample product shot", img["alt"]
   end
 
+  # The benefits comparison block (.compare) is styled by CSS classes inside the post body, so the sanitizer must keep them.
+  test "body keeps class attributes for the side-by-side comparison block" do
+    post = Post.create!(title: "Compare", post_type: :comparison, published_at: 1.hour.ago, content:
+      %(<div class="compare"><div class="compare-col compare-yes"><p class="compare-title">Yes</p><ul><li>One</li></ul></div>) +
+      %(<div class="compare-col compare-no"><p class="compare-title">No</p><ul><li>Two</li></ul></div></div>))
+    show post
+    assert_select "article .compare .compare-col.compare-yes li", text: "One"
+    assert_select "article .compare .compare-col.compare-no li", text: "Two"
+    assert_select "article .compare > .compare-col", count: 2
+  end
+
   # Req 11
   test "youtube embed uses nocookie host with title and lazy loading" do
     show posts(:one)

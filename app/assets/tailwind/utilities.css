@@ -145,6 +145,44 @@
     & figcaption {
       @apply mt-2 text-sm text-ink/70;
     }
+
+    /* Side-by-side "yes / no" benefit lists with tick and cross marks; stacked on mobile.
+       Used from post bodies as div.compare > div.compare-col.compare-yes|compare-no > p.compare-title + ul. */
+    & .compare {
+      @apply my-8 grid gap-4 sm:grid-cols-2;
+    }
+    & .compare-col {
+      @apply rounded-xl border p-5;
+    }
+    & .compare-yes {
+      @apply border-accent/40 bg-accent/5;
+    }
+    & .compare-no {
+      @apply border-red-300 bg-red-50;
+    }
+    & .compare-title {
+      @apply heading my-0 mb-4 text-lg;
+    }
+    & .compare ul {
+      @apply my-0 list-none p-0;
+    }
+    & .compare li {
+      @apply relative m-0 mb-3 pl-9 leading-snug last:mb-0;
+
+      &::before {
+        @apply absolute top-0.5 left-0 grid size-6 place-items-center rounded-full text-sm font-bold text-white;
+      }
+    }
+    & .compare-yes li::before {
+      content: "✓"; /* fallback for browsers without alt-text syntax */
+      content: "✓" / "";
+      @apply bg-accent;
+    }
+    & .compare-no li::before {
+      content: "✗"; /* fallback for browsers without alt-text syntax */
+      content: "✗" / "";
+      @apply bg-red-600;
+    }
   }
 
   /* Tag labels separated by " · ". Also scoped under .prose-post to beat its ul/li rules on the post page. */
