@@ -1,6 +1,8 @@
 <header class="border-b border-ink/10">
   <div class="page flex items-center justify-between py-5">
-    <%= link_to ApplicationHelper::SITE_NAME, root_path, class: "heading text-xl" %>
+    <%= link_to root_path, class: "block" do %>
+      <%= image_tag "logo/hypebusted-header-on-light.svg", alt: ApplicationHelper::SITE_NAME, class: "h-9 w-auto" %>
+    <% end %>
     <nav aria-label="Main" class="flex gap-5 text-sm muted">
       <a href="/#comparisons">Comparisons</a>
       <a href="/#reviews">Reviews</a>
