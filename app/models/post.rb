@@ -5,8 +5,9 @@ class Post < ApplicationRecord
 
   has_rich_text :content
 
-  # Virtual flag set by the Avo "Edit as HTML" checkbox; not persisted.
-  attribute :html_editor, :boolean, default: false
+  # Virtual flag set by the Avo "Edit as HTML" checkbox; not persisted. The HTML editor is the default,
+  # so a submitted content_html wins unless the checkbox is unticked ("0"); callers that only set content still save it.
+  attribute :html_editor, :boolean, default: true
 
   validates :post_type, presence: true
   validates :title, presence: true

@@ -227,6 +227,16 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal anonymous_etag, response.headers["ETag"]
   end
 
+  # R3e/R4: admin JS loads only on Avo pages
+  test "public home and post pages do not load avo_admin" do
+    get "/"
+    assert_response :success
+    assert_not_includes response.body, "avo_admin"
+    show posts(:one)
+    assert_response :success
+    assert_not_includes response.body, "avo_admin"
+  end
+
   # Clickable links Req 5
   test "post page tags are plain labels in a tag-list without pill class" do
     show posts(:one)

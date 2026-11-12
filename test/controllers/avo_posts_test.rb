@@ -57,6 +57,12 @@ class AvoPostsTest < ActionDispatch::IntegrationTest
     assert_not_includes wrapper_classes(TRIX_WRAPPER), "hidden"
   end
 
+  def assert_html_mode
+    assert_html_toggle(checked: true)
+    assert_not_includes wrapper_classes(HTML_WRAPPER), "hidden"
+    assert_includes wrapper_classes(TRIX_WRAPPER), "hidden"
+  end
+
   def html_textarea_text
     node = css_select("textarea[name='post[content_html]']").first
     assert node, "expected content_html textarea"
@@ -72,10 +78,11 @@ class AvoPostsTest < ActionDispatch::IntegrationTest
     patch "/milo/resources/posts/#{@post.id}", params: { post: attrs }
   end
 
-  test "edit form has trix, Edit as HTML toggle and HTML textarea in trix mode" do
+  # R1b
+  test "edit form has trix, Edit as HTML toggle and HTML textarea and opens in HTML mode" do
     edit_post
     assert_select "[name='post[content]']"
-    assert_trix_mode
+    assert_html_mode
     assert_equal @post.content.body.to_html, html_textarea_text
     assert_select "#{HTML_WRAPPER} textarea.font-mono[rows='100']"
     # Avo's autogrow sizes the textarea while hidden (height 0), so a min-height keeps it 100 lines tall.
@@ -90,16 +97,32 @@ class AvoPostsTest < ActionDispatch::IntegrationTest
     assert_includes html_textarea_text, "<action-text-attachment"
   end
 
-  test "edit form shows the hint about markup being stripped" do
+  # R2b
+  test "edit form shows the hint that the HTML editor is the default" do
     edit_post
-    assert_select "[data-resource-edit-target='htmlEditorBooleanWrapper']", text: /strip/i
+    hint = "[data-resource-edit-target='htmlEditorBooleanWrapper'] .field-wrapper__help"
+    assert_select hint, text: /The HTML editor is the default\./
+    assert_select hint, text: /Untick to use the rich-text editor \(Trix\), which strips markup; see its warning\./
+    assert_select hint, text: /Switching editors does not carry over unsaved changes; save before switching\./
   end
 
-  test "new form has trix, Edit as HTML toggle and empty HTML textarea" do
+  # R2a: the warning sits inside the Trix wrapper, so it only shows with Trix
+  test "trix field warns that saving from it strips headings and classes" do
+    edit_post
+    warning = "#{TRIX_WRAPPER} .field-wrapper__help"
+    assert_select warning, text: /strip/i
+    assert_select warning, text: /h2/
+    assert_select warning, text: /compare/
+    assert_select warning, text: /HTML editor/
+    assert_select "#{HTML_WRAPPER} .field-wrapper__help", text: /h2/, count: 0
+  end
+
+  # R1b
+  test "new form has trix, Edit as HTML toggle and empty HTML textarea and opens in HTML mode" do
     get "/milo/resources/posts/new"
     assert_response :success
     assert_select "[name='post[content]']"
-    assert_trix_mode
+    assert_html_mode
     assert_equal "", html_textarea_text.strip
   end
 
@@ -115,10 +138,42 @@ class AvoPostsTest < ActionDispatch::IntegrationTest
     assert_equal "<div>trix</div>", @post.reload.content.body.to_html
   end
 
-  test "saving without html_editor uses trix content" do
+  # R1f: HTML mode is the default, so a submitted content_html wins even without the checkbox param
+  test "saving without html_editor uses content_html when it is submitted" do
     update_post(content_html: "<h1>Raw</h1>", content: "<div>trix</div>")
     assert_response :redirect
-    assert_equal "<div>trix</div>", @post.reload.content.body.to_html
+    assert_equal "<h1>Raw</h1>", @post.reload.content.body.to_html
+  end
+
+  # R1f: requests without content_html (seeds, scripts) still save content
+  test "saving only content without html_editor or content_html saves content" do
+    update_post(content: "<div>trix only</div>")
+    assert_response :redirect
+    assert_equal "<div>trix only</div>", @post.reload.content.body.to_html
+  end
+
+  # R1c
+  test "failed save in trix mode re-renders in trix mode" do
+    update_post(html_editor: "0", title: "", content: "<div>trix</div>", content_html: "<h1>Raw</h1>")
+    assert_response :unprocessable_content
+    assert_trix_mode
+  end
+
+  # R1e
+  test "saving a full article in HTML mode persists headings, classes and attachment" do
+    blob = image_blob
+    update_post(html_editor: "1", content_html: article_html(blob), content: "<div>trix</div>")
+    assert_response :redirect
+
+    body = @post.reload.content.body.to_html
+    assert_includes body, "<h2>Section heading</h2>"
+    assert_includes body, "<h3>Sub heading</h3>"
+    assert_includes body, COMPARE_BLOCK_HTML
+    attachment = Nokogiri::HTML5.fragment(body).at_css("action-text-attachment")
+    assert attachment, "expected an action-text-attachment in #{body}"
+    assert_equal blob, ActionText::Attachable.from_attachable_sgid(attachment["sgid"])
+    assert_equal "Cap", attachment["caption"]
+    assert_equal "gallery", attachment["presentation"]
   end
 
   test "CRLF from the HTML textarea is stored as LF" do
@@ -135,21 +190,69 @@ class AvoPostsTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_content
     assert_equal original, @post.reload.content.body.to_html
     assert_includes response.body, "can&#39;t be blank"
-    assert_html_toggle(checked: true)
-    assert_not_includes wrapper_classes(HTML_WRAPPER), "hidden"
-    assert_includes wrapper_classes(TRIX_WRAPPER), "hidden"
+    assert_html_mode
   end
 
   test "failed save in HTML mode keeps the submitted HTML in the textarea" do
     update_post(html_editor: "1", content_html: "<div>kept</div>", slug: posts(:two).slug)
     assert_response :unprocessable_content
     assert_equal "<div>kept</div>", html_textarea_text
+    assert_html_mode
   end
 
-  test "edit page always opens in trix mode after an HTML save" do
-    update_post(html_editor: "1", content_html: "<div>x</div>")
+  # R1d
+  test "edit page opens in HTML mode after a Trix save" do
+    update_post(html_editor: "0", content: "<div>x</div>")
+    assert_response :redirect
     edit_post
-    assert_trix_mode
+    assert_html_mode
+  end
+
+  test "edit page opens in HTML mode after an HTML save" do
+    update_post(html_editor: "1", content_html: "<div>x</div>")
+    assert_response :redirect
+    edit_post
+    assert_html_mode
+  end
+
+  # R3a
+  def assert_image_insert_controller
+    node = css_select(HTML_WRAPPER).first
+    assert node, "expected #{HTML_WRAPPER}"
+    assert_includes node["data-controller"].to_s.split, "html-image-insert"
+    assert_equal IMAGE_UPLOAD_URL, node["data-html-image-insert-url-value"]
+  end
+
+  test "edit form HTML wrapper carries the image insert controller and upload url" do
+    edit_post
+    assert_image_insert_controller
+  end
+
+  test "new form HTML wrapper carries the image insert controller and upload url" do
+    get "/milo/resources/posts/new"
+    assert_response :success
+    assert_image_insert_controller
+  end
+
+  test "textarea keeps Avo's autogrow controller" do
+    edit_post
+    assert_select "#{HTML_WRAPPER} textarea[data-controller~='textarea-autogrow']"
+  end
+
+  # R4
+  test "Avo pages load the avo_admin importmap entry" do
+    edit_post
+    importmap = css_select("script[type=importmap]").first
+    assert importmap, "expected script[type=importmap]"
+    assert JSON.parse(importmap.text)["imports"].key?("avo_admin"), "importmap should pin avo_admin"
+    modules = css_select("script[type=module]").map(&:text).join("\n")
+    assert_match(/import\s+["']avo_admin["']/, modules)
+  end
+
+  test "Avo pages do not import the public application entry, trix or actiontext" do
+    edit_post
+    modules = css_select("script[type=module]").map(&:text).join("\n")
+    assert_no_match(/import\s+["'](application|trix|@rails\/actiontext)["']/, modules)
   end
 
   test "HTML saved in HTML mode shows in trix and textarea on next edit" do
