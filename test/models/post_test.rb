@@ -138,8 +138,44 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "", Post.new.content_html
   end
 
-  test "html_editor defaults to false" do
-    assert_equal false, Post.new.html_editor
+  # R1a: the HTML editor is the default
+  test "html_editor defaults to true" do
+    assert_equal true, Post.new.html_editor
+  end
+
+  test "html_editor is true on a post loaded from the database" do
+    assert_equal true, Post.find(posts(:one).id).html_editor
+  end
+
+  # R1f: callers that only set content (seeds, tests) still save it
+  test "creating a post with only content saves that content" do
+    post = Post.create!(title: "Content Only", content: "<div>Only content</div>", post_type: :review)
+    assert_equal "<div>Only content</div>", post.reload.content.body.to_html
+  end
+
+  test "updating only content saves that content" do
+    post = posts(:one)
+    post.update!(content: "<div>Updated content</div>")
+    assert_equal "<div>Updated content</div>", post.reload.content.body.to_html
+  end
+
+  # R1e: a full article saved in HTML mode keeps headings, classes and attachment attributes
+  test "full article saved in HTML mode keeps headings, compare block and attachment" do
+    blob = image_blob
+    post = posts(:one)
+    post.update!(html_editor: true, content_html: article_html(blob))
+
+    body = post.reload.content.body.to_html
+    assert_includes body, COMPARE_BLOCK_HTML
+    assert_includes body, "<h2>Section heading</h2>"
+    assert_includes body, "<h3>Sub heading</h3>"
+
+    attachment = Nokogiri::HTML5.fragment(body).at_css("action-text-attachment")
+    assert attachment, "expected an action-text-attachment in #{body}"
+    assert_equal blob, ActionText::Attachable.from_attachable_sgid(attachment["sgid"])
+    assert_equal "Cap", attachment["caption"]
+    assert_equal "gallery", attachment["presentation"]
+    assert_equal blob.id, post.cover_image.blob.id
   end
 
   test "html_editor true replaces content with content_html on save" do

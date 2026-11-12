@@ -1,0 +1,4 @@
+<%# Overrides Avo's empty head partial to load the admin-only JS (app/javascript/avo_admin.js) on Avo pages. %>
+<%# No modulepreload tags, so the public app's modules (trix, actiontext, turbo) are not fetched here. %>
+<%= javascript_inline_importmap_tag AvoImportmap.map.to_json(resolver: self) %>
+<%= javascript_import_module_tag "avo_admin" %>
