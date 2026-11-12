@@ -5,6 +5,13 @@ module ApplicationHelper
     chevron: "M9 6l6 6-6 6"
   }.freeze
 
+  # Image src for an attached blob. On a public service (S3 behind the CDN) this is the variant's direct
+  # CDN URL, so browsers and Cloudflare cache it; otherwise the Rails representation route.
+  def blob_image_source(blob, **transformations)
+    representation = blob.representation(**transformations)
+    blob.service.public? ? representation.processed.url : representation
+  end
+
   def seo_tags(title:, description:, type: "website", image: nil, published_at: nil)
     url = request.base_url + request.path
     metas = [
