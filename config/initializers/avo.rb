@@ -2,7 +2,7 @@
 # The values disaplayed here are the default ones. Uncomment and change them to fit your needs.
 Avo.configure do |config|
   ## == Routing ==
-  # Admin path. Also moves the status page to <path>/avo_private/status.
+  # Admin path. Also moves the status page to <path>/status.
   config.root_path = "/milo"
   # used only when you have custom `map` configuration in your config.ru
   # config.prefix_path = "/internal"

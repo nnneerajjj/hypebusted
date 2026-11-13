@@ -2,6 +2,7 @@ require "test_helper"
 
 class AvoAccessTest < ActionDispatch::IntegrationTest
   ADMIN_PATH = "/milo".freeze
+  STATUS_PATH = "#{ADMIN_PATH}/status".freeze
 
   setup do
     @super_admin = users(:one)
@@ -14,7 +15,7 @@ class AvoAccessTest < ActionDispatch::IntegrationTest
   end
 
   test "logged out visitor cannot reach the status page" do
-    get "#{ADMIN_PATH}/avo_private/status"
+    get STATUS_PATH
     assert_redirected_to "/session/new"
   end
 
@@ -47,14 +48,14 @@ class AvoAccessTest < ActionDispatch::IntegrationTest
   test "super admin can open the status page" do
     sign_in_as(@super_admin)
 
-    get "#{ADMIN_PATH}/avo_private/status"
+    get STATUS_PATH
     assert_response :success
   end
 
   test "regular user cannot open the status page" do
     sign_in_as(@regular)
 
-    get "#{ADMIN_PATH}/avo_private/status"
+    get STATUS_PATH
     assert_redirected_to "/"
   end
 
