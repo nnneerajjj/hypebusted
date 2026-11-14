@@ -28,3 +28,4 @@ Shared task list for all Claude chat windows and the developer. Check it before 
 - [ ] Add schema.org structured data: add JSON-LD markup (e.g. `Review` with `itemReviewed`/`reviewRating` on reviews, `ItemList` on comparisons, `BlogPosting` on journal posts) to the public post pages. Decide the exact types before implementing. `Review` JSON-LD for rated reviews is done (alongside the existing `BlogPosting`); the other types are still open.
 - [ ] Change the uploaded video of the Cloudflare review: replace the video currently attached to the Cloudflare review with a new one (update `Post#youtube_video_id` on that post).
 - [ ] Create the next video about VPS hosting: a video (see the video-creation skill) reviewing RackNerd hosting.
+- [ ] Compare and review domain providers: write comparison and review posts for GoDaddy, Namecheap, Squarespace, Tucows, Spaceship, and Hostinger (see the article-writing skill for the rules, and dated prices).
