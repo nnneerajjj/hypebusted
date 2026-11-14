@@ -4,12 +4,16 @@ one:
   youtube_video_id: ABCDEFG1234
   published_at: <%= 1.day.ago %>
   slug: first-blog-post
+  rating: 4.5
+  reviewed_item_name: Example Tool
 two:
   title: Second Blog Post
   post_type: 0
   youtube_video_id: HIJKLMN4567
   published_at: <%= 2.days.ago %>
   slug: second-blog-post
+  rating: 4
+  reviewed_item_name: Other Tool
 three:
   title: My Awesome Video Tutorial
   post_type: 1

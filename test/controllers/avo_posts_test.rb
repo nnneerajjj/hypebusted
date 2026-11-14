@@ -369,4 +369,71 @@ class AvoPostsTest < ActionDispatch::IntegrationTest
     assert_response :redirect
     assert_equal [ tags(:two) ], @post.reload.tags.to_a
   end
+
+  # Editorial rating (Rating Req 7)
+  test "edit and new forms have rating and reviewed item fields" do
+    edit_post
+    assert_select "input[name='post[rating]']"
+    assert_select "input[name='post[reviewed_item_name]']"
+    get "/milo/resources/posts/new"
+    assert_response :success
+    assert_select "input[name='post[rating]']"
+    assert_select "input[name='post[reviewed_item_name]']"
+  end
+
+  test "show page displays rating and reviewed item" do
+    get "/milo/resources/posts/#{@post.id}"
+    assert_response :success
+    assert_select "[data-field-id='rating']", text: /4\.5/
+    assert_select "[data-field-id='reviewed_item_name']", text: /Example Tool/
+  end
+
+  test "creating a review with a rating saves it" do
+    assert_difference "Post.count", 1 do
+      post "/milo/resources/posts", params: { post: {
+        title: "Rated Review", post_type: "review", slug: "rated-review", content: "<div>x</div>",
+        rating: "4.5", reviewed_item_name: "Cloudflare Registrar"
+      } }
+    end
+    created = Post.find_by!(slug: "rated-review")
+    assert_equal BigDecimal("4.5"), created.rating
+    assert_equal "Cloudflare Registrar", created.reviewed_item_name
+  end
+
+  test "updating a review rating saves it" do
+    post = posts(:four)
+    patch "/milo/resources/posts/#{post.id}", params: { post: { rating: "3.5", reviewed_item_name: "New Tool" } }
+    assert_response :redirect
+    post.reload
+    assert_equal BigDecimal("3.5"), post.rating
+    assert_equal "New Tool", post.reviewed_item_name
+  end
+
+  test "off-step rating shows a validation error and does not save" do
+    update_post(rating: "4.3")
+    assert_response :unprocessable_content
+    assert_equal BigDecimal("4.5"), @post.reload.rating
+  end
+
+  test "rating on a comparison shows a validation error and does not save" do
+    comparison = posts(:three)
+    patch "/milo/resources/posts/#{comparison.id}", params: { post: { rating: "4", reviewed_item_name: "Tool" } }
+    assert_response :unprocessable_content
+    assert_nil comparison.reload.rating
+  end
+
+  test "rating without a reviewed item shows a validation error and does not save" do
+    post = posts(:four)
+    patch "/milo/resources/posts/#{post.id}", params: { post: { rating: "4", reviewed_item_name: "" } }
+    assert_response :unprocessable_content
+    assert_nil post.reload.rating
+  end
+
+  test "blank rating clears it to nil, not zero" do
+    update_post(rating: "", reviewed_item_name: "")
+    assert_response :redirect
+    @post.reload
+    assert_nil @post.rating
+    assert @post.reviewed_item_name.blank?
+  end
 end

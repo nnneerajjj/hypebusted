@@ -248,4 +248,153 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     end
     assert_select "[style]", count: 0
   end
+
+  # Editorial star rating
+  def ld_json_scripts
+    css_select('script[type="application/ld+json"]').map { |n| JSON.parse(n.text) }
+  end
+
+  def star_rating_node
+    node = css_select(".star-rating").first
+    assert node, "expected a .star-rating element"
+    node
+  end
+
+  def review_ld
+    data = json_ld("Review")
+    assert data, "expected Review JSON-LD"
+    data
+  end
+
+  # Text a screen reader announces: everything outside aria-hidden subtrees.
+  def accessible_text(node)
+    return "" if node.element? && node["aria-hidden"] == "true"
+    return node.text if node.text?
+    node.children.map { |child| accessible_text(child) }.join
+  end
+
+  # Rating Req 8
+  test "rated review shows the star rating between the h1 and the date line" do
+    show posts(:one)
+    assert_select "header .star-rating", count: 1
+    rating = star_rating_node
+    assert_equal "h1", rating.previous_element&.name, "star rating must come directly after the h1"
+    date_line = rating.next_element
+    assert date_line, "expected the date line after the star rating"
+    assert date_line.at_css("time[datetime]"), "expected the date line directly after the star rating"
+  end
+
+  test "rated review star rating has visible text and decorative svgs" do
+    show posts(:one)
+    rating = star_rating_node
+    assert_equal "4.5 out of 5", accessible_text(rating).squish
+    svgs = rating.css("svg")
+    assert_operator svgs.size, :>=, 1
+    svgs.each do |svg|
+      hidden = svg.ancestors.any? { |a| a.respond_to?(:[]) && a["aria-hidden"] == "true" } || svg["aria-hidden"] == "true"
+      assert hidden, "every star svg must be aria-hidden"
+    end
+  end
+
+  test "star rating uses no javascript" do
+    show posts(:one)
+    rating = star_rating_node
+    assert_empty rating.css("script")
+    assert_empty rating.css("[data-controller]")
+    assert_nil rating["data-controller"]
+  end
+
+  test "whole-number rating shows without a decimal" do
+    show posts(:two)
+    assert_equal "4 out of 5", accessible_text(star_rating_node).squish
+    assert_not_includes response.body, "4.0 out of 5"
+  end
+
+  # Rating Req 10
+  test "rated review renders BlogPosting and a Review JSON-LD block" do
+    post = posts(:one)
+    show post
+    scripts = ld_json_scripts
+    assert_equal 2, scripts.size
+    assert_equal %w[BlogPosting Review], scripts.map { |j| j["@type"] }
+
+    expected = {
+      "@context" => "https://schema.org",
+      "@type" => "Review",
+      "name" => post.title,
+      "url" => post_url(post.slug),
+      "datePublished" => post.published_at.iso8601,
+      "itemReviewed" => { "@type" => "SoftwareApplication", "name" => "Example Tool" },
+      "reviewRating" => { "@type" => "Rating", "ratingValue" => 4.5, "bestRating" => 5, "worstRating" => 1 },
+      "author" => { "@type" => "Person", "name" => "Neeraj Singh" },
+      "publisher" => { "@type" => "Organization", "name" => "HypeBusted" }
+    }
+    assert_equal expected, review_ld
+  end
+
+  test "Review JSON-LD ratingValue is a JSON number, an integer for whole ratings" do
+    show posts(:two)
+    rating = review_ld["reviewRating"]
+    assert_equal 4, rating["ratingValue"]
+    assert_kind_of Integer, rating["ratingValue"]
+    assert_kind_of Integer, rating["bestRating"]
+    assert_kind_of Integer, rating["worstRating"]
+    assert_includes response.body, '"ratingValue":4,'
+    assert_includes response.body, '"bestRating":5'
+  end
+
+  test "rated review keeps the BlogPosting JSON-LD unchanged" do
+    post = posts(:one)
+    show post
+    site = { "@type" => "Organization", "name" => "HypeBusted" }
+    expected = {
+      "@context" => "https://schema.org",
+      "@type" => "BlogPosting",
+      "headline" => post.title,
+      "description" => post.seo_description,
+      "datePublished" => post.published_at.iso8601,
+      "dateModified" => post.updated_at.iso8601,
+      "mainEntityOfPage" => post_url(post.slug),
+      "author" => site,
+      "publisher" => site
+    }
+    assert_equal expected, json_ld("BlogPosting")
+  end
+
+  # Rating Req 11
+  test "visible rating text and JSON-LD ratingValue agree" do
+    [ posts(:one), posts(:two) ].each do |post|
+      show post
+      value = review_ld["reviewRating"]["ratingValue"]
+      assert_equal "#{value} out of 5", accessible_text(star_rating_node).squish
+    end
+  end
+
+  test "reviewed item name is escaped in JSON-LD and not shown visibly" do
+    post = Post.create!(title: "Escaping", post_type: :review, published_at: 1.hour.ago, content: "<div>x</div>",
+      rating: 3, reviewed_item_name: "</script><script>alert(1)</script>")
+    show post
+    assert_response :success
+    assert_equal "</script><script>alert(1)</script>", review_ld["itemReviewed"]["name"]
+    assert_equal 2, css_select("script").count { |s| s["type"] == "application/ld+json" }
+    assert_not_includes response.body, "<script>alert(1)</script>"
+  end
+
+  # Rating Req 5/9
+  test "unrated review and comparison render no star rating and only BlogPosting JSON-LD" do
+    [ posts(:four), posts(:three), posts(:no_video) ].each do |post|
+      assert_nil post.rating
+      show post
+      assert_response :success
+      assert_select ".star-rating", count: 0
+      assert_select "article header svg", count: 0
+      assert_not_includes response.body, "out of 5"
+      assert_equal [ "BlogPosting" ], ld_json_scripts.map { |j| j["@type"] }
+    end
+  end
+
+  test "unrated post page has no inline styles" do
+    show posts(:four)
+    assert_select "[style]", count: 0
+  end
 end

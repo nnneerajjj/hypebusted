@@ -2,6 +2,7 @@
 <% page_title = "#{@post.title.truncate(47)} | #{ApplicationHelper::SITE_NAME}" %>
 <% image = @post.cover_image && rails_blob_url(@post.cover_image) %>
 <% description = @post.seo_description %>
+<% url = post_url(@post.slug) %>
 <% content_for :title, page_title %>
 <% seo_tags title: @post.title, description: description, type: "article", image: image, published_at: @post.published_at %>
 <%= json_ld({
@@ -11,16 +12,30 @@
   description: description,
   datePublished: @post.published_at.iso8601,
   dateModified: @post.updated_at.iso8601,
-  mainEntityOfPage: post_url(@post.slug),
+  mainEntityOfPage: url,
   image: image,
   author: site,
   publisher: site
 }.compact) %>
+<% if @post.rating %>
+  <%= json_ld({
+    "@context": "https://schema.org",
+    "@type": "Review",
+    name: @post.title,
+    url: url,
+    datePublished: @post.published_at.iso8601,
+    itemReviewed: { "@type": "SoftwareApplication", name: @post.reviewed_item_name },
+    reviewRating: { "@type": "Rating", ratingValue: @post.rating_value, bestRating: Post::BEST_RATING, worstRating: Post::WORST_RATING },
+    author: { "@type": "Person", name: ApplicationHelper::AUTHOR_NAME },
+    publisher: site
+  }) %>
+<% end %>
 
 <article class="prose-post py-12">
   <header>
     <p class="eyebrow"><%= @post.post_type.humanize %></p>
     <h1 class="heading mt-3 text-4xl leading-tight"><%= @post.title %></h1>
+    <%= star_rating(@post) if @post.rating %>
     <p class="eyebrow mt-3"><%= time_tag_for(@post.published_at, "%B %-d, %Y") %></p>
     <%= render "posts/tags", post: @post %>
   </header>

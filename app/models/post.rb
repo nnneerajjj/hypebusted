@@ -1,5 +1,8 @@
 class Post < ApplicationRecord
   YOUTUBE_ID_FORMAT = /\A[A-Za-z0-9_-]{11}\z/
+  WORST_RATING = 1
+  BEST_RATING = 5
+  RATINGS = (WORST_RATING..BEST_RATING).step(0.5).to_a.freeze
 
   enum :post_type, { review: 0, comparison: 1, journal: 2 }, suffix: true, validate: true
 
@@ -14,6 +17,9 @@ class Post < ApplicationRecord
   validates :content, presence: true
   validates :slug, presence: true, uniqueness: true
   validates :youtube_video_id, format: { with: YOUTUBE_ID_FORMAT }, allow_blank: true
+  validates :rating, inclusion: { in: RATINGS }, allow_nil: true
+  validates :rating, absence: true, unless: :review_post_type?
+  validates :reviewed_item_name, presence: true, if: :rating
 
   has_many :taggings, dependent: :destroy
   has_many :tags, through: :taggings
@@ -62,6 +68,11 @@ class Post < ApplicationRecord
 
     self.tags = new_tags
     self.updated_at = Time.current if persisted?
+  end
+
+  # Rating as shown and sent to Google: 4 for whole ratings, 4.5 for halves.
+  def rating_value
+    rating && (rating.frac.zero? ? rating.to_i : rating.to_f)
   end
 
   def seo_description
