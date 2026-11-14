@@ -67,6 +67,7 @@ posts = [
   # Open source CRM cluster: five reviews, then the comparison that links to them.
   {
     slug: "twenty-crm-review",
+    reviewed_item_name: "Twenty",
     title: "Twenty CRM Review: A Modern Open Source CRM for Developers",
     post_type: "review",
     published_at: "2026-09-02 09:00",
@@ -75,6 +76,7 @@ posts = [
   },
   {
     slug: "suitecrm-review",
+    reviewed_item_name: "SuiteCRM",
     title: "SuiteCRM Review: Full-Featured Open Source CRM with a Long History",
     post_type: "review",
     published_at: "2026-09-16 09:00",
@@ -83,6 +85,7 @@ posts = [
   },
   {
     slug: "espocrm-review",
+    reviewed_item_name: "EspoCRM",
     title: "EspoCRM Review: Lightweight, Customizable and Easy to Self-Host",
     post_type: "review",
     published_at: "2026-09-30 09:00",
@@ -91,6 +94,7 @@ posts = [
   },
   {
     slug: "frappe-crm-review",
+    reviewed_item_name: "Frappe CRM",
     title: "Frappe CRM Review: A Clean Sales CRM from the Frappe Ecosystem",
     post_type: "review",
     published_at: "2026-10-14 09:00",
@@ -99,6 +103,7 @@ posts = [
   },
   {
     slug: "krayin-crm-review",
+    reviewed_item_name: "Krayin CRM",
     title: "Krayin CRM Review: A Laravel CRM for Teams That Like to Tinker",
     post_type: "review",
     published_at: "2026-10-28 09:00",
@@ -115,6 +120,7 @@ posts = [
   },
   {
     slug: "monica-personal-crm-review",
+    reviewed_item_name: "Monica",
     title: "Monica Review: A Personal CRM for Remembering the People You Care About",
     post_type: "review",
     published_at: "2027-01-12 09:00",
@@ -196,8 +202,11 @@ posts.each do |attrs|
     post_type: attrs[:post_type],
     youtube_video_id: attrs[:youtube_video_id],
     published_at: Time.zone.parse(attrs[:published_at]),
-    tags: attrs[:tag_names].map { |name| Tag.find_by!(name: name) }
+    tags: attrs[:tag_names].map { |name| Tag.find_by!(name: name) },
+    reviewed_item_name: attrs[:reviewed_item_name]
   )
+  # Reviews of a named tool get a random rating the first time; reruns keep it.
+  post.rating = attrs[:reviewed_item_name] && (post.rating || Post::RATINGS.sample)
   post.content = article_html.(attrs)
   post.save!
 end
