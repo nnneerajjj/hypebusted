@@ -341,4 +341,113 @@ class PostTest < ActiveSupport::TestCase
       assert post.errors[:youtube_video_id].any?
     end
   end
+
+  # Editorial rating
+  def rated_post(rating, post_type: :review, reviewed_item_name: "Example Tool")
+    Post.new(title: "Rated", content: "x", post_type: post_type, rating: rating, reviewed_item_name: reviewed_item_name)
+  end
+
+  # Rating Req 12
+  test "rating scale constants" do
+    assert_equal 1, Post::WORST_RATING
+    assert_equal 5, Post::BEST_RATING
+    assert_equal [ 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0 ], Post::RATINGS
+  end
+
+  # Rating Req 2
+  test "every half-star rating from 1 to 5 is valid on a review" do
+    Post::RATINGS.each do |rating|
+      post = rated_post(rating)
+      assert post.valid?, "expected #{rating} to be valid: #{post.errors.full_messages}"
+    end
+  end
+
+  test "rating given as a form string is valid" do
+    assert rated_post("4.5").valid?
+  end
+
+  test "nil rating is valid on a review" do
+    assert rated_post(nil, reviewed_item_name: nil).valid?
+  end
+
+  test "ratings outside the scale or off the half-star step are invalid" do
+    [ 0, 0.5, 4.3, 5.5 ].each do |rating|
+      post = rated_post(rating)
+      assert_not post.valid?, "expected #{rating} to be invalid"
+      assert post.errors[:rating].any?, "expected a rating error for #{rating}"
+    end
+  end
+
+  # Rating Req 3
+  test "rating on a comparison or journal post is invalid" do
+    %i[comparison journal].each do |type|
+      post = rated_post(4, post_type: type)
+      assert_not post.valid?, "expected rating on #{type} to be invalid"
+      assert post.errors[:rating].any?, "expected a rating error on #{type}"
+    end
+  end
+
+  test "nil rating is valid on every post type" do
+    Post.post_types.each_key do |type|
+      assert rated_post(nil, post_type: type, reviewed_item_name: nil).valid?, "expected unrated #{type} to be valid"
+    end
+  end
+
+  test "changing a rated review to a comparison is invalid until the rating is cleared" do
+    post = posts(:one)
+    post.post_type = :comparison
+    assert_not post.valid?
+    post.rating = nil
+    assert post.valid?
+  end
+
+  # Rating Req 4
+  test "rating requires a reviewed item name" do
+    [ nil, "", "  " ].each do |name|
+      post = rated_post(4.5, reviewed_item_name: name)
+      assert_not post.valid?, "expected #{name.inspect} reviewed_item_name to be invalid"
+      assert_includes post.errors[:reviewed_item_name], "can't be blank"
+    end
+  end
+
+  test "reviewed item name without a rating is allowed" do
+    assert rated_post(nil, reviewed_item_name: "Example Tool").valid?
+  end
+
+  # Rating Req 1/5
+  test "rating persists as a decimal and unrated fixtures stay valid" do
+    assert_equal BigDecimal("4.5"), posts(:one).reload.rating
+    assert_equal "Example Tool", posts(:one).reviewed_item_name
+    %i[three four draft future no_video].each do |name|
+      assert_nil posts(name).rating
+      assert posts(name).valid?, "expected #{name} to stay valid"
+    end
+  end
+
+  # Rating Req 6
+  test "rating_value is nil without a rating" do
+    assert_nil rated_post(nil).rating_value
+  end
+
+  test "rating_value is an Integer for whole ratings" do
+    value = rated_post(4).rating_value
+    assert_equal 4, value
+    assert_kind_of Integer, value
+    assert_equal "4", value.to_s
+    assert_equal "4", value.to_json
+  end
+
+  test "rating_value is a Float for half ratings" do
+    value = rated_post(4.5).rating_value
+    assert_equal 4.5, value
+    assert_kind_of Float, value
+    assert_equal "4.5", value.to_s
+    assert_equal "4.5", value.to_json
+  end
+
+  test "rating_value from a persisted decimal rating" do
+    assert_equal 4.5, posts(:one).reload.rating_value
+    assert_kind_of Integer, posts(:two).reload.rating_value
+    assert_equal 4, posts(:two).rating_value
+  end
 end

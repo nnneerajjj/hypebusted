@@ -1,4 +1,3 @@
-
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -11,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_07_090003) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_14_043339) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -61,6 +60,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_090003) do
     t.string "slug"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "rating", precision: 2, scale: 1
+    t.string "reviewed_item_name"
     t.index ["post_type"], name: "index_posts_on_post_type"
     t.index ["slug"], name: "index_posts_on_slug", unique: true
   end

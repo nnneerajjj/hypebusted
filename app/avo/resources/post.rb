@@ -41,6 +41,9 @@ class Avo::Resources::Post < Avo::BaseResource
         end
       }
     field :post_type, as: :select, enum: ::Post.post_types
+    field :rating, as: :number, min: ::Post::WORST_RATING, max: ::Post::BEST_RATING, step: 0.5
+    field :reviewed_item_name, as: :text, name: "Reviewed item",
+      help: "Tool name shown to Google, e.g. Cloudflare Registrar. Required when rating is set."
     field :tag_ids_input, as: :select, multiple: true, only_on: :forms, name: "Tags",
       options: -> { ::Tag.order(:name).pluck(:name, :id).to_h }
     field :tags, as: :text, only_on: :show, name: "Tags", format_using: -> { value.map(&:name).join(", ") }
