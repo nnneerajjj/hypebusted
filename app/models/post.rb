@@ -75,6 +75,11 @@ class Post < ApplicationRecord
     rating && (rating.frac.zero? ? rating.to_i : rating.to_f)
   end
 
+  # Mirrors the published scope.
+  def published?
+    published_at.present? && published_at <= Time.current
+  end
+
   def seo_description
     content.to_plain_text.squish.truncate(155)
   end

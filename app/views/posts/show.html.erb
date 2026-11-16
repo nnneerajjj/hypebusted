@@ -4,13 +4,14 @@
 <% description = @post.seo_description %>
 <% url = post_url(@post.slug) %>
 <% content_for :title, page_title %>
-<% seo_tags title: @post.title, description: description, type: "article", image: image, published_at: @post.published_at %>
+<% published_at = @post.published_at&.iso8601 %>
+<% seo_tags title: @post.title, description: description, type: "article", image: image, published_at: @post.published_at, noindex: !@post.published? %>
 <%= json_ld({
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   headline: @post.title,
   description: description,
-  datePublished: @post.published_at.iso8601,
+  datePublished: published_at,
   dateModified: @post.updated_at.iso8601,
   mainEntityOfPage: url,
   image: image,
@@ -23,20 +24,22 @@
     "@type": "Review",
     name: @post.title,
     url: url,
-    datePublished: @post.published_at.iso8601,
+    datePublished: published_at,
     itemReviewed: { "@type": "SoftwareApplication", name: @post.reviewed_item_name },
     reviewRating: { "@type": "Rating", ratingValue: @post.rating_value, bestRating: Post::BEST_RATING, worstRating: Post::WORST_RATING },
     author: { "@type": "Person", name: ApplicationHelper::AUTHOR_NAME },
     publisher: site
-  }) %>
+  }.compact) %>
 <% end %>
 
 <article class="prose-post py-12">
   <header>
-    <p class="eyebrow"><%= @post.post_type.humanize %></p>
+    <p class="flex items-center gap-2"><span class="eyebrow"><%= @post.post_type.humanize %></span><%= unpublished_badge(@post) %></p>
     <h1 class="heading mt-3 text-4xl leading-tight"><%= @post.title %></h1>
     <%= star_rating(@post) if @post.rating %>
-    <p class="eyebrow mt-3"><%= time_tag_for(@post.published_at, "%B %-d, %Y") %></p>
+    <% if @post.published_at %>
+      <p class="eyebrow mt-3"><%= time_tag_for(@post.published_at, "%B %-d, %Y") %></p>
+    <% end %>
     <%= render "posts/tags", post: @post %>
   </header>
 

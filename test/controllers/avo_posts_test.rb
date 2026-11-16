@@ -436,4 +436,31 @@ class AvoPostsTest < ActionDispatch::IntegrationTest
     assert_nil @post.rating
     assert @post.reviewed_item_name.blank?
   end
+
+  # Unpublished preview AC9: show page links to the public page in a new tab
+  test "show page has a View on site link to the public post opening in a new tab" do
+    get "/milo/resources/posts/#{@post.id}"
+    assert_response :success
+    assert_select 'a[href="/posts/first-blog-post"][target="_blank"][rel~="noopener"]', text: "View on site", count: 1
+  end
+
+  test "draft show page has a View on site link to its public page" do
+    draft = posts(:draft)
+    get "/milo/resources/posts/#{draft.id}"
+    assert_response :success
+    assert_select 'a[href=?][target="_blank"][rel~="noopener"]', "/posts/#{draft.slug}", text: "View on site", count: 1
+  end
+
+  # Unpublished preview AC10: the link is not on the forms
+  test "edit and new forms have no View on site link" do
+    get "/milo/resources/posts/#{@post.id}/edit"
+    assert_response :success
+    assert_select 'a[href^="/posts/"][target="_blank"]', count: 0
+    assert_select "a", text: "View on site", count: 0
+
+    get "/milo/resources/posts/new"
+    assert_response :success
+    assert_select 'a[href^="/posts/"][target="_blank"]', count: 0
+    assert_select "a", text: "View on site", count: 0
+  end
 end

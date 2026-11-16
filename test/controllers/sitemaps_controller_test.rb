@@ -34,4 +34,18 @@ class SitemapsControllerTest < ActionDispatch::IntegrationTest
     assert home
     assert_nil home.at_xpath("lastmod")
   end
+
+  # Unpublished preview AC8: the sitemap never lists unpublished posts, even for a super admin
+  test "sitemap lists only published posts when a super admin is signed in" do
+    sign_in_as(users(:one))
+    get "/sitemap.xml"
+    assert_response :success
+    doc = Nokogiri::XML(response.body)
+    doc.remove_namespaces!
+    locs = doc.xpath("//url/loc").map(&:text)
+    assert_includes locs, "http://www.example.com/posts/first-blog-post"
+    assert_not_includes locs, "http://www.example.com/posts/unfinished-draft-post"
+    assert_not_includes locs, "http://www.example.com/posts/scheduled-future-post"
+    assert_equal Post.published.count + 1, locs.size
+  end
 end

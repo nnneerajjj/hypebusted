@@ -16,7 +16,11 @@ module ApplicationHelper
     blob.service.public? ? representation.processed.url : representation
   end
 
-  def seo_tags(title:, description:, type: "website", image: nil, published_at: nil)
+  def unpublished_badge(post)
+    tag.span("Unpublished", class: "badge-unpublished") unless post.published?
+  end
+
+  def seo_tags(title:, description:, type: "website", image: nil, published_at: nil, noindex: false)
     url = request.base_url + request.path
     metas = [
       tag.meta(name: "description", content: description),
@@ -30,6 +34,7 @@ module ApplicationHelper
     ]
     metas << tag.meta(property: "og:image", content: image) if image
     metas << tag.meta(property: "article:published_time", content: published_at.iso8601) if published_at
+    metas << tag.meta(name: "robots", content: "noindex") if noindex
     content_for :head, safe_join(metas, "\n")
   end
 

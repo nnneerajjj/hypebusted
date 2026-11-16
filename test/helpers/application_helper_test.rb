@@ -104,4 +104,29 @@ class ApplicationHelperTest < ActionView::TestCase
     html = star_rating(Post.new(post_type: :review, rating: 3, reviewed_item_name: "Tool"))
     ApplicationHelper::ICON_PATHS.each_value { |d| assert_not_includes html, d }
   end
+
+  # Unpublished preview AC5: badge helper
+  test "unpublished_badge is nil for a published post" do
+    assert_nil unpublished_badge(posts(:one))
+  end
+
+  test "unpublished_badge renders an Unpublished span for drafts and scheduled posts" do
+    [ posts(:draft), posts(:future) ].each do |post|
+      span = Nokogiri::HTML5.fragment(unpublished_badge(post)).at_css("span.badge-unpublished")
+      assert span, "expected span.badge-unpublished for #{post.slug}"
+      assert_equal "Unpublished", span.text.strip
+      assert_nil span["style"]
+    end
+  end
+
+  # Unpublished preview AC6: seo_tags noindex option
+  test "seo_tags with noindex emits a robots noindex meta" do
+    seo_tags(title: "T", description: "D", noindex: true)
+    assert_select Nokogiri::HTML5.fragment(content_for(:head)), 'meta[name="robots"][content="noindex"]', count: 1
+  end
+
+  test "seo_tags without noindex emits no robots meta" do
+    seo_tags(title: "T", description: "D")
+    assert_select Nokogiri::HTML5.fragment(content_for(:head)), 'meta[name="robots"]', count: 0
+  end
 end

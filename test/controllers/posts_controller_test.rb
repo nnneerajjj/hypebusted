@@ -397,4 +397,92 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     show posts(:four)
     assert_select "[style]", count: 0
   end
+
+  # Unpublished preview AC2/AC4/AC5/AC6: super admin can open draft and scheduled posts
+  test "super admin can open draft and scheduled posts with badge, noindex and private caching" do
+    sign_in_as(users(:one))
+    { posts(:draft) => "Draft body text.", posts(:future) => "Future body text." }.each do |post, body|
+      show post
+      assert_response :success, "expected 200 for #{post.slug}"
+      assert_select "h1", count: 1
+      assert_select "h1", text: post.title
+      assert_select "article", text: /#{Regexp.escape(body)}/
+      assert_select "article header span.badge-unpublished", count: 1
+      assert_select 'meta[name="robots"][content="noindex"]', count: 1
+      cache_control = response.headers["Cache-Control"]
+      assert_match(/no-store/, cache_control)
+      assert_match(/private/, cache_control)
+      assert_no_match(/public/, cache_control)
+      assert response.headers["ETag"].blank?, "expected no ETag for super admin, got #{response.headers["ETag"].inspect}"
+    end
+  end
+
+  # Unpublished preview AC7: nil published_at renders no date and no published dates in metadata
+  test "super admin draft page has no time element, no datePublished and no article:published_time" do
+    sign_in_as(users(:one))
+    show posts(:draft)
+    assert_response :success
+    assert_select "article time", count: 0
+    assert_select 'meta[property="article:published_time"]', count: 0
+    data = json_ld("BlogPosting")
+    assert data, "expected BlogPosting JSON-LD"
+    assert_not data.key?("datePublished"), "datePublished must be omitted for a draft"
+    assert_equal posts(:draft).title, data["headline"]
+  end
+
+  test "super admin rated draft review renders without datePublished in Review JSON-LD" do
+    post = posts(:draft)
+    post.update!(rating: 4, reviewed_item_name: "Draft Tool")
+    sign_in_as(users(:one))
+    show post
+    assert_response :success
+    review = json_ld("Review")
+    assert review, "expected Review JSON-LD"
+    assert_not review.key?("datePublished")
+  end
+
+  # Unpublished preview AC7: scheduled posts still show their date
+  test "super admin scheduled post shows its scheduled date" do
+    post = posts(:future)
+    sign_in_as(users(:one))
+    show post
+    assert_response :success
+    assert_select "article time[datetime=?]", post.published_at.iso8601, count: 1
+    assert_equal post.published_at.iso8601, json_ld("BlogPosting")["datePublished"]
+  end
+
+  # Unpublished preview AC5/AC6: published posts never get the badge or noindex, even for admin
+  test "super admin published post has no unpublished badge and no robots meta" do
+    sign_in_as(users(:one))
+    show posts(:one)
+    assert_response :success
+    assert_select ".badge-unpublished", count: 0
+    assert_select 'meta[name="robots"]', count: 0
+  end
+
+  test "anonymous published post has no unpublished badge and no robots meta" do
+    show posts(:one)
+    assert_response :success
+    assert_select ".badge-unpublished", count: 0
+    assert_select 'meta[name="robots"]', count: 0
+  end
+
+  # Unpublished preview AC3: regular users still get 404
+  test "regular logged-in user gets 404 for draft and scheduled posts without the title" do
+    sign_in_as(users(:two))
+    [ posts(:draft), posts(:future) ].each do |p|
+      show p
+      assert_response :not_found
+      assert_not_includes response.body, p.title
+    end
+  end
+
+  # Unpublished preview AC11: style rules hold on admin preview pages
+  test "super admin draft page has no inline styles or arbitrary value classes" do
+    sign_in_as(users(:one))
+    show posts(:draft)
+    assert_response :success
+    assert_select "[style]", count: 0
+    assert_no_match(/class="[^"]*\[/, response.body)
+  end
 end

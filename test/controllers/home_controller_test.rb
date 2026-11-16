@@ -238,4 +238,112 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_no_match(/class="[^"]*\[/, response.body)
     assert_no_match(/6fdcae/i, response.body)
   end
+
+  def card_for(post)
+    css_select("main article").find { |card| card.at_css("h3")&.text&.strip == post.title }
+  end
+
+  # Unpublished preview AC1/AC5: super admin sees drafts and scheduled posts with a badge
+  test "super admin sees draft and scheduled reviews in the reviews section with an unpublished badge" do
+    assert posts(:draft).review_post_type?
+    assert posts(:future).review_post_type?
+    sign_in_as(users(:one))
+    get root_path
+    assert_response :success
+    [ posts(:draft), posts(:future) ].each do |post|
+      assert_select "section#reviews article h3", text: post.title, count: 1
+      card = card_for(post)
+      assert card, "expected a card for #{post.title}"
+      assert_equal 1, card.css("span.badge-unpublished").size, "expected an unpublished badge on #{post.title}"
+    end
+    [ posts(:one), posts(:two), posts(:three) ].each do |post|
+      card = card_for(post)
+      assert card, "expected a card for #{post.title}"
+      assert_empty card.css(".badge-unpublished"), "published #{post.title} must not show the badge"
+    end
+  end
+
+  test "super admin sees draft and scheduled posts in the comparisons and journal sections" do
+    comparison = Post.create!(title: "Draft Comparison", post_type: :comparison, content: "x", published_at: nil)
+    journal = Post.create!(title: "Scheduled Journal", post_type: :journal, content: "x", published_at: 1.day.from_now)
+    sign_in_as(users(:one))
+    get root_path
+    assert_response :success
+    assert_select "section#comparisons article h3", text: comparison.title, count: 1
+    assert_select "section#journal article h3", text: journal.title, count: 1
+    [ comparison, journal ].each do |post|
+      card = card_for(post)
+      assert card, "expected a card for #{post.title}"
+      assert_equal 1, card.css("span.badge-unpublished").size
+    end
+  end
+
+  # Unpublished preview AC7: a nil-date draft card renders without a time element
+  test "super admin home renders a draft card without a time element" do
+    sign_in_as(users(:one))
+    get root_path
+    assert_response :success
+    draft_card = card_for(posts(:draft))
+    future_card = card_for(posts(:future))
+    assert draft_card, "expected a card for the draft"
+    assert future_card, "expected a card for the scheduled post"
+    assert_empty draft_card.css("time")
+    assert_equal 1, future_card.css("time").size
+  end
+
+  # Unpublished preview AC1: existing per-section limits still apply
+  test "super admin home keeps the per-section limits with unpublished posts" do
+    5.times { |i| Post.create!(title: "Extra Draft Comparison #{i}", post_type: :comparison, content: "x", published_at: nil) }
+    5.times { |i| Post.create!(title: "Extra Draft Review #{i}", post_type: :review, content: "x", published_at: nil) }
+    11.times { |i| Post.create!(title: "Extra Draft Journal #{i}", post_type: :journal, content: "x", published_at: nil) }
+    sign_in_as(users(:one))
+    get root_path
+    assert_response :success
+    assert_select "section#comparisons article", count: 4
+    assert_select "section#reviews article", count: 6
+    assert_select "section#journal article", count: 10
+  end
+
+  # Unpublished preview AC4: admin home is never publicly cached
+  test "super admin home with unpublished posts is private, no-store and has no ETag" do
+    sign_in_as(users(:one))
+    get root_path
+    assert_response :success
+    assert_select "article h3", text: posts(:draft).title
+    cache_control = response.headers["Cache-Control"]
+    assert_match(/no-store/, cache_control)
+    assert_match(/private/, cache_control)
+    assert_no_match(/public/, cache_control)
+    assert response.headers["ETag"].blank?
+  end
+
+  # Unpublished preview AC3: regular users and anonymous visitors still don't see unpublished posts
+  test "regular logged-in user does not see draft or scheduled posts" do
+    sign_in_as(users(:two))
+    get root_path
+    assert_response :success
+    assert_select "article h3", text: posts(:draft).title, count: 0
+    assert_select "article h3", text: posts(:future).title, count: 0
+    assert_select ".badge-unpublished", count: 0
+  end
+
+  test "anonymous home shows no unpublished badge" do
+    get root_path
+    assert_select "article h3", text: posts(:draft).title, count: 0
+    assert_select ".badge-unpublished", count: 0
+  end
+
+  # Unpublished preview AC11: link and style rules hold for the admin view
+  test "super admin home keeps one link per card and no inline styles or arbitrary classes" do
+    Post.create!(title: "Draft Journal Row", post_type: :journal, content: "x", published_at: nil)
+    sign_in_as(users(:one))
+    get root_path
+    assert_response :success
+    css_select("main article").each do |card|
+      assert_equal 1, card.css("a").size, "expected exactly one link per card"
+      assert_includes card.css("a").first["class"].to_s, "stretched-link"
+    end
+    assert_select "[style]", count: 0
+    assert_no_match(/class="[^"]*\[/, response.body)
+  end
 end
