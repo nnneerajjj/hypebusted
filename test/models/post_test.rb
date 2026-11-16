@@ -450,4 +450,30 @@ class PostTest < ActiveSupport::TestCase
     assert_kind_of Integer, posts(:two).reload.rating_value
     assert_equal 4, posts(:two).rating_value
   end
+
+  # Unpublished preview: published? predicate
+  test "published? is false without a published_at" do
+    assert_not Post.new(published_at: nil).published?
+    assert_not posts(:draft).published?
+  end
+
+  test "published? is false for a future published_at" do
+    assert_not Post.new(published_at: 1.minute.from_now).published?
+    assert_not posts(:future).published?
+  end
+
+  test "published? is true for a past or current published_at" do
+    assert Post.new(published_at: 1.day.ago).published?
+    freeze_time do
+      assert Post.new(published_at: Time.current).published?
+    end
+    assert posts(:one).published?
+  end
+
+  test "published? agrees with the published scope for every fixture" do
+    published_ids = Post.published.ids
+    Post.find_each do |post|
+      assert_equal published_ids.include?(post.id), post.published?, "mismatch for #{post.slug}"
+    end
+  end
 end

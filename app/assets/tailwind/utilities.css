@@ -55,6 +55,10 @@
     @apply font-mono text-xs uppercase tracking-wider opacity-60;
   }
 
+  .badge-unpublished {
+    @apply rounded-full bg-accent-light px-2 py-0.5 font-mono text-xs uppercase tracking-wider text-ink;
+  }
+
   .muted {
     @apply text-ink/70;
   }

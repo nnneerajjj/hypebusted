@@ -50,5 +50,8 @@ class Avo::Resources::Post < Avo::BaseResource
     field :youtube_video_id, as: :text
     field :published_at, as: :date_time
     field :slug, as: :text
+    field :public_page, as: :text, only_on: :show, as_html: true, name: "Public page" do
+      link_to "View on site", main_app.post_path(record.slug), target: "_blank", rel: "noopener"
+    end
   end
 end

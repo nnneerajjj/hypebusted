@@ -9,6 +9,11 @@ class ApplicationController < ActionController::Base
   stale_when_importmap_changes
 
   private
+    # A super admin also sees drafts and scheduled posts.
+    def visible_posts
+      super_admin_signed_in? ? Post.all : Post.published
+    end
+
     # Public pages are cached by shared caches for 5 minutes. A super admin's page
     # shows the admin link, so it must never be stored ("private, no-store", no ETag).
     def cache_publicly(object = nil, **options)
