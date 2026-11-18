@@ -71,4 +71,4 @@ end
 gem "tailwindcss-rails", "~> 4.7"
 gem "avo"
 
-gem "aws-sdk-s3", "~> 1.241", require: false
+gem "aws-sdk-s3", "~> 1.242", require: false
